@@ -1,0 +1,10 @@
+[
+    {
+        "berat": 10.0,
+        "harga": 100000.0,
+        "id_barang": "SDG-001",
+        "nama_barang": "Semen Tiga Roda",
+        "satuan": "Kilogram (kg)",
+        "stok": 8
+    }
+]

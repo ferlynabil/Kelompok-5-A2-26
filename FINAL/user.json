@@ -1,0 +1,26 @@
+[
+    {
+        "alamat": "Samarinda",
+        "nama_lengkap": "Admin Gudang",
+        "no_telp": "0811",
+        "password": "123",
+        "role": "Admin",
+        "username": "Admin"
+    },
+    {
+        "alamat": "Samarinda",
+        "nama_lengkap": "Nuron",
+        "no_telp": "0812",
+        "password": "037",
+        "role": "Customer",
+        "username": "Nuron"
+    },
+    {
+        "alamat": "ewok city",
+        "nama_lengkap": "ewok",
+        "no_telp": "1234567890987",
+        "password": "0987654321",
+        "role": "Customer",
+        "username": "ewok"
+    }
+]

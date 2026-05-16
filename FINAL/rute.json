@@ -1,0 +1,14 @@
+[
+    {
+        "biaya_premium": 300000.0,
+        "biaya_reguler": 0.0,
+        "biaya_standar": 150000.0,
+        "estimasi_premium": "3 Hari",
+        "estimasi_reguler": "-",
+        "estimasi_standar": "5 Hari",
+        "id_rute": "R01",
+        "jarak": 180.0,
+        "kota_asal": "Samarinda",
+        "tujuan": "Bali"
+    }
+]

@@ -16,7 +16,7 @@ using namespace std;
 int main() {
     vector<Barang> database_barang;
     vector<Pesanan> database_pesanan;
-    vector<Rute> database_rute; 
+    vector<Rute> database_rute;
     vector<Pengguna> database_user;
 
     // 1. MUAT DATA SAAT START
@@ -32,41 +32,83 @@ int main() {
     bool berjalan = true;
 
     while (berjalan) {
+
         system("cls");
+
         cout << "========================================" << endl;
         cout << "     SISTEM CARGO & TOKO BANGUNAN       " << endl;
         cout << "========================================" << endl;
-        cout << "1. Login\n2. Register\n0. Matikan Program\nPilih: "; 
-        
-        int pil;
-        if (!(cin >> pil)) { cin.clear(); string d; getline(cin, d); continue; }
-        cin.ignore();
+        cout << "1. Login\n2. Register\n0. Matikan Program\nPilih: ";
+
+        // VALIDASI INPUT MENU
+        string input;
+        getline(cin, input);
+
+        // Hanya menerima 0,1,2
+        if (input != "0" && input != "1" && input != "2") {
+            cout << "\n[!] Pilihan tidak valid!" << endl;
+            system("pause");
+            continue;
+        }
+
+        int pil = stoi(input);
 
         if (pil == 1) {
-            // menuLogin parameternya nggak berubah, tetap 3
+
+            // LOGIN
             if (menuLogin(database_user, user_aktif, role_aktif)) {
+
                 if (role_aktif == "Admin") {
-                    // SUDAH DIUPDATE: Tambah database_user
-                    menuAdmin(database_barang, database_pesanan, database_rute, database_user);
+
+                    // MENU ADMIN
+                    menuAdmin(database_barang,
+                              database_pesanan,
+                              database_rute,
+                              database_user);
+
                 } else {
-                    // SUDAH DIUPDATE: Tambah &database_user
-                    userMenu(&database_barang, &database_rute, &database_pesanan, &database_user);
+
+                    // MENU USER
+                    userMenu(&database_barang,
+                             &database_rute,
+                             &database_pesanan,
+                             &database_user);
                 }
-                // 2. AUTO-SAVE SETELAH LOGOUT (Safety Net)
-                simpanData(database_barang, database_pesanan, database_rute, database_user);
+
+                // AUTO SAVE SETELAH LOGOUT
+                simpanData(database_barang,
+                           database_pesanan,
+                           database_rute,
+                           database_user);
             }
+
         } else if (pil == 2) {
-            // SUDAH DIUPDATE: Tambah 3 database lainnya sesuai urutan di login.h
-            menuRegister(database_user, database_barang, database_pesanan, database_rute);
-            
-            // 3. AUTO-SAVE SETELAH REGISTRASI (Safety Net tambahan)
-            simpanData(database_barang, database_pesanan, database_rute, database_user);
+
+            // REGISTER
+            menuRegister(database_user,
+                         database_barang,
+                         database_pesanan,
+                         database_rute);
+
+            // AUTO SAVE SETELAH REGISTER
+            simpanData(database_barang,
+                       database_pesanan,
+                       database_rute,
+                       database_user);
+
         } else if (pil == 0) {
-            // 4. FINAL SAVE SEBELUM MATI
-            simpanData(database_barang, database_pesanan, database_rute, database_user);
+
+            // SAVE SEBELUM EXIT
+            simpanData(database_barang,
+                       database_pesanan,
+                       database_rute,
+                       database_user);
+
             cout << "\n[+] Data berhasil disimpan. Mematikan program...\n";
+
             berjalan = false;
         }
     }
+
     return 0;
 }

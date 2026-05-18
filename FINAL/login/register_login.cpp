@@ -27,35 +27,54 @@ void tampilGaris() {
 }
 
 void validasiNamaLengkap(const string &nama, const string &field) {
+
     validasiTidakKosong(nama, field);
-    validasiMinPanjang(nama, 3, field);
     validasiMaksPanjang(nama, 50, field);
 
     bool adaHuruf = false;
 
     for (int i = 0; i < (int)nama.length(); i++) {
+
         char c = nama[i];
 
         if (isalpha(c)) {
+
             adaHuruf = true;
+
         } 
         else if (c == ' ') {
+
             continue;
+
         } 
         else if (isdigit(c)) {
+
             throw runtime_error(field + " tidak boleh mengandung angka.");
+
         } 
         else {
-            throw runtime_error(field + " tidak boleh mengandung simbol '" + string(1, c) + "'.");
+
+            throw runtime_error(
+                field + " tidak boleh mengandung simbol '" 
+                + string(1, c) + "'."
+            );
+
         }
     }
 
-    if (!adaHuruf)
+    if (!adaHuruf) {
+
         throw runtime_error(field + " harus mengandung huruf.");
+
+    }
+
+    validasiMinPanjang(nama, 3, field);
 }
 
 bool cekUsernameTerdaftar(const vector<Pengguna>& database_user, const string &username) {
+
     for (const auto& u : database_user) {
+
         if (u.username == username)
             return true;
     }
@@ -68,6 +87,7 @@ Pengguna* cariPenggunaLogin(vector<Pengguna>& database_user,
                             const string &password) {
 
     for (auto& u : database_user) {
+
         if (u.username == username && u.password == password)
             return &u;
     }
@@ -101,6 +121,7 @@ void menuRegister(vector<Pengguna>& database_user,
 
             cout << "  Nama Lengkap : ";
             getline(cin, nama);
+
             validasiNamaLengkap(nama, "Nama Lengkap");
 
             cout << "  Username     : ";
@@ -108,9 +129,11 @@ void menuRegister(vector<Pengguna>& database_user,
 
             username = trim(username);
 
+            validasiTidakKosong(username, "Username");
             validasiUsername(username, "Username");
 
             if (cekUsernameTerdaftar(database_user, username)) {
+
                 throw runtime_error(
                     "Username \"" + username + "\" sudah dipakai. Silakan pilih username lain."
                 );
@@ -124,13 +147,20 @@ void menuRegister(vector<Pengguna>& database_user,
             validasiTidakKosong(telepon, "No Telepon");
 
             for (int i = 0; i < (int)telepon.length(); i++) {
+
                 if (!isdigit(telepon[i])) {
-                    throw runtime_error("No Telepon hanya boleh berisi angka.");
+
+                    throw runtime_error(
+                        "No Telepon hanya boleh berisi angka."
+                    );
                 }
             }
 
             if ((int)telepon.length() < 9 || (int)telepon.length() > 13) {
-                throw runtime_error("No Telepon harus antara 9-13 digit.");
+
+                throw runtime_error(
+                    "No Telepon harus antara 9-13 digit."
+                );
             }
 
             cout << "  Alamat       : ";
@@ -142,6 +172,7 @@ void menuRegister(vector<Pengguna>& database_user,
             cout << "  Password     : ";
             getline(cin, password);
 
+            validasiTidakKosong(password, "Password");
             validasiMinPanjang(password, 8, "Password");
             validasiMaksPanjang(password, 30, "Password");
 
@@ -149,9 +180,11 @@ void menuRegister(vector<Pengguna>& database_user,
             getline(cin, konfirmasi);
 
             if (password != konfirmasi) {
-                throw runtime_error("Konfirmasi password tidak cocok.");
-            }
 
+                throw runtime_error(
+                    "Konfirmasi password tidak cocok."
+                );
+            }
 
             database_user.push_back({
                 username,
@@ -162,9 +195,15 @@ void menuRegister(vector<Pengguna>& database_user,
                 "Customer"
             });
 
-            simpanData(db_barang, db_pesanan, db_rute, database_user);
+            simpanData(
+                db_barang,
+                db_pesanan,
+                db_rute,
+                database_user
+            );
 
             tampilGaris();
+
             cout << "  Registrasi berhasil! Silahkan login." << endl;
             cout << "  [+] Data Pengguna di JSON otomatis diperbarui!" << endl;
 
@@ -172,10 +211,13 @@ void menuRegister(vector<Pengguna>& database_user,
 
             selesai = true;
 
-        } catch (exception &e) {
+        } 
+        catch (exception &e) {
 
             tampilGaris();
+
             cout << "  [!] " << e.what() << endl;
+
             tampilGaris();
 
             string ans;
@@ -194,6 +236,7 @@ void menuRegister(vector<Pengguna>& database_user,
                 else if (ans == "n" || ans == "N") {
 
                     cout << "  Registrasi dibatalkan." << endl;
+
                     selesai = true;
                     break;
 
@@ -219,7 +262,9 @@ bool menuLogin(vector<Pengguna>& database_user,
         clearScreenLogin();
 
         tampilHeader();
+
         cout << "                    LOGIN" << endl;
+
         tampilGaris();
 
         int percobaan = 3;
@@ -249,7 +294,10 @@ bool menuLogin(vector<Pengguna>& database_user,
                 );
 
                 if (p == nullptr) {
-                    throw runtime_error("Username atau password salah.");
+
+                    throw runtime_error(
+                        "Username atau password salah."
+                    );
                 }
 
                 user_aktif = p->username;
@@ -258,15 +306,18 @@ bool menuLogin(vector<Pengguna>& database_user,
                 string nama_aktif = p->nama_lengkap;
 
                 tampilGaris();
+
                 cout << "  Login berhasil!" << endl;
                 cout << "  Selamat datang, " << nama_aktif << "!" << endl;
+
                 tampilGaris();
 
                 for(int i = 0; i < 100000000; i++);
 
                 return true;
 
-            } catch (exception &e) {
+            } 
+            catch (exception &e) {
 
                 percobaan--;
 
@@ -285,7 +336,9 @@ bool menuLogin(vector<Pengguna>& database_user,
                     cout << endl;
 
                     tampilGaris();
+
                     cout << "  Akses ditolak. Terlalu banyak percobaan gagal." << endl;
+
                     tampilGaris();
 
                     string ans;
@@ -304,6 +357,7 @@ bool menuLogin(vector<Pengguna>& database_user,
                         else if (ans == "n" || ans == "N") {
 
                             cout << "  Kembali ke menu utama." << endl;
+
                             selesai = true;
                             break;
 

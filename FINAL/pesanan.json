@@ -3,7 +3,7 @@
         "id_pesanan": "TRX001",
         "jumlah": 2,
         "nama_barang": "Semen Tiga Roda",
-        "status": "Menunggu Konfirmasi",
+        "status": "Lunas",
         "tipe_beli": "Diantar (Premium)",
         "total_bayar": 500000.0
     }

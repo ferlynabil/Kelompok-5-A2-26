@@ -5,7 +5,6 @@
 #include "../database_handler.h"
 
 void clearScreenUser() {
-    // Untuk transisi antar halaman: clear penuh
     std::cout << "\033[2J\033[H" << std::flush;
 }
 
@@ -19,7 +18,6 @@ std::string getValidStringUser() {
     std::string input;
     while (true) {
         std::getline(std::cin, input);
-        // Trim spasi kiri & kanan
         while (!input.empty() && input.front() == ' ') input.erase(input.begin());
         while (!input.empty() && input.back()  == ' ') input.pop_back();
 
@@ -48,7 +46,6 @@ long long getValidNumberUser() {
     long long num = -1;
     while (true) {
         std::getline(std::cin, input);
-        // Trim
         while (!input.empty() && input.front() == ' ') input.erase(input.begin());
         while (!input.empty() && input.back()  == ' ') input.pop_back();
 
@@ -77,21 +74,11 @@ long long getValidNumberUser() {
     return num;
 }
 
-// =========================================================
-//  ANTI-FLICKER: Sembunyikan cursor + overwrite di tempat
-//  \033[?25l  = hide cursor
-//  \033[H     = move ke baris 1 kolom 1 (HOME)
-//  \033[J     = hapus dari kursor ke bawah (bukan seluruh layar sekaligus)
-//  \033[?25h  = show cursor kembali
-// =========================================================
 int inquirerMenuUser(std::string title, std::vector<std::string> options) {
     int selected = 0;
-
-    // Sembunyikan kursor supaya tidak berkedip saat redrawa
     std::cout << "\033[?25l" << std::flush;
 
     while (true) {
-        // Pindah ke HOME + hapus sisa layar (lebih smooth dari \033[2J)
         std::cout << "\033[H\033[J";
         std::cout << "\033[1;35m================================\033[0m\n";
         std::cout << "\033[1;37m   " << title << "\033[0m\n";
@@ -109,14 +96,42 @@ int inquirerMenuUser(std::string title, std::vector<std::string> options) {
 
         char key = _getch();
         if (key == 0 || (unsigned char)key == 224) {
-            // Arrow key prefix → baca byte kedua
             key = _getch();
-            if (key == 72 && selected > 0)                           selected--; // Atas
-            else if (key == 80 && selected < (int)options.size()-1)  selected++; // Bawah
+            if (key == 72 && selected > 0)                           selected--;
+            else if (key == 80 && selected < (int)options.size()-1)  selected++;
         } else if (key == 13) {
-            // Enter: tampilkan cursor kembali sebelum return
             std::cout << "\033[?25h" << std::flush;
             return selected;
         }
     }
+}
+
+std::string inputPassword() {
+    std::string password = "";
+    char ch;
+
+    while (true) {
+        ch = _getch();
+
+        if (ch == 0 || (unsigned char)ch == 224) {
+            _getch();
+            continue;
+        }
+
+        if (ch == '\r') {
+            std::cout << std::endl;
+            break;
+        } 
+        else if (ch == '\b') {
+            if (!password.empty()) {
+                password.pop_back();
+                std::cout << "\b \b";
+            }
+        } 
+        else {
+            password += ch;
+            std::cout << '*';
+        }
+    }
+    return password;
 }

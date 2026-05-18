@@ -5,8 +5,8 @@
 
 
 void payOrder(std::vector<Pesanan>* trxs,
-              std::vector<Barang>*  db_barang,
-              std::vector<Rute>*    db_rute,
+              std::vector<Barang>* db_barang,
+              std::vector<Rute>* db_rute,
               std::vector<Pengguna>* db_user) {
 
     bool berjalan = true;
@@ -135,13 +135,16 @@ void payOrder(std::vector<Pesanan>* trxs,
         std::cout << "  Nama Barang   : "            << target->nama_barang  << "\n";
         std::cout << "  Jumlah        : "            << target->jumlah       << " pcs\n";
         std::cout << "  Tipe Beli     : "            << target->tipe_beli    << "\n";
-        std::cout << "\033[1;33m  ─────────────────────────────────\033[0m\n";
+        
+        // SUDAH DIGANTI: Menggunakan '=' biasa agar aman dari encoding error
+        std::cout << "\033[1;33m  =================================\033[0m\n"; 
+        
         std::cout << "\033[1;32m  TOTAL BAYAR  : Rp"
                   << (long long)target->total_bayar << "\033[0m\n\n";
 
         // Input nominal pembayaran
         long long bayar  = 0;
-        bool      bayarOk = false;
+        bool       bayarOk = false;
 
         std::cout << "Masukkan nominal uang yang dibayarkan (Rp): ";
 
@@ -191,7 +194,6 @@ void payOrder(std::vector<Pesanan>* trxs,
         }
 
         // Update status → "Lunas"
-        // Catatan: "Lunas & Dikirim" diurus oleh Admin via layanan_pembayaran.cpp
         target->status = "Lunas";
 
         // Simpan ke JSON sekarang juga

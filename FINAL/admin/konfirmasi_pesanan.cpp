@@ -2,6 +2,7 @@
 #include <vector>
 #include <string>
 #include <iomanip>
+#include <conio.h>
 #include "admin.h"
 #include "../database_handler.h"
 
@@ -17,9 +18,8 @@ void konfirmasiPesanan(vector<Pesanan>& daftar_pesanan,
 
     if (daftar_pesanan.empty()) {
         cout << "Tidak ada pesanan sama sekali.\n";
-        cout << "\nTekan Enter untuk kembali...";
-        string dummy;
-        getline(cin >> ws, dummy);
+        cout << "\nTekan sembarang tombol untuk kembali...";
+        _getch();
         return;
     }
 
@@ -46,9 +46,8 @@ void konfirmasiPesanan(vector<Pesanan>& daftar_pesanan,
 
     if (!ada) {
         cout << "\n[~] Tidak ada pesanan yang menunggu konfirmasi.\n";
-        cout << "\nTekan Enter untuk kembali...";
-        string dummy;
-        getline(cin >> ws, dummy);
+        cout << "\nTekan sembarang tombol untuk kembali...";
+        _getch();
         return;
     }
     cout << "-------------------------------------------------------------------------------\n";
@@ -71,7 +70,8 @@ void konfirmasiPesanan(vector<Pesanan>& daftar_pesanan,
 
     if (it == daftar_pesanan.end()) {
         cout << "\n[-] ID Pesanan tidak ditemukan atau bukan status \"Menunggu Konfirmasi\".\n";
-        system("pause");
+        cout << "\nTekan sembarang tombol untuk kembali...";
+        _getch();
         return;
     }
 
@@ -81,10 +81,10 @@ void konfirmasiPesanan(vector<Pesanan>& daftar_pesanan,
     cout << "  Total       : Rp" << (long long)it->total_bayar << "\n";
     cout << "  Tipe Beli   : " << it->tipe_beli << "\n\n";
 
-    // Pilihan: terima atau tolak
+    // Pilihan tindakan
     cout << "Pilih tindakan:\n";
-    cout << "  [1] Terima  → status menjadi \"Menunggu Pembayaran\"\n";
-    cout << "  [2] Tolak   → status menjadi \"Ditolak\"\n";
+    cout << "  [1] Terima  -> status menjadi \"Menunggu Pembayaran\"\n";
+    cout << "  [2] Tolak   -> status menjadi \"Ditolak\"\n";
     cout << "  [0] Batal\n";
     cout << "Pilihan: ";
 
@@ -95,8 +95,9 @@ void konfirmasiPesanan(vector<Pesanan>& daftar_pesanan,
         it->status = "Menunggu Pembayaran";
         simpanData(db_barang, daftar_pesanan, db_rute, db_user);
 
+        system("cls");
         cout << "\n[+] Pesanan diterima!\n";
-        cout << "[+] Status berubah → \"Menunggu Pembayaran\".\n";
+        cout << "[+] Status berubah -> \"Menunggu Pembayaran\".\n";
         cout << "[+] Pembeli sekarang dapat melakukan pembayaran.\n";
         cout << "[+] Data JSON diperbarui otomatis.\n";
 
@@ -104,13 +105,16 @@ void konfirmasiPesanan(vector<Pesanan>& daftar_pesanan,
         it->status = "Ditolak";
         simpanData(db_barang, daftar_pesanan, db_rute, db_user);
 
+        system("cls");
         cout << "\n[!] Pesanan ditolak.\n";
-        cout << "[!] Status berubah → \"Ditolak\".\n";
+        cout << "[!] Status berubah -> \"Ditolak\".\n";
         cout << "[+] Data JSON diperbarui otomatis.\n";
 
     } else {
+        system("cls");
         cout << "\n[~] Dibatalkan, tidak ada perubahan.\n";
     }
 
-    system("pause");
+    cout << "\nTekan sembarang tombol untuk kembali...";
+    _getch();
 }

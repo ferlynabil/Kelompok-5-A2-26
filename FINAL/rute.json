@@ -7,8 +7,20 @@
         "estimasi_reguler": "-",
         "estimasi_standar": "5 Hari",
         "id_rute": "R01",
-        "jarak": 180.0,
+        "jarak": 150.0,
         "kota_asal": "Samarinda",
         "tujuan": "Bali"
+    },
+    {
+        "biaya_premium": 0.0,
+        "biaya_reguler": 10000.0,
+        "biaya_standar": 15000.0,
+        "estimasi_premium": "-",
+        "estimasi_reguler": "2 Hari",
+        "estimasi_standar": "1 Hari",
+        "id_rute": "R02",
+        "jarak": 25.0,
+        "kota_asal": "Samarinda",
+        "tujuan": "Tenggarong"
     }
 ]

@@ -7,7 +7,7 @@
 
 using namespace std;
 
-// 1. UPDATE PARAMETER: Tambahkan db_barang, db_rute, db_user
+
 void layananPembayaranDanPengiriman(vector<Pesanan>& daftar_pesanan, vector<Barang>& db_barang, vector<Rute>& db_rute, vector<Pengguna>& db_user) {
     if (daftar_pesanan.empty()) {
         system("cls");
@@ -69,11 +69,10 @@ void layananPembayaranDanPengiriman(vector<Pesanan>& daftar_pesanan, vector<Bara
     cin >> konfirm;
 
     if (konfirm == 'y' || konfirm == 'Y') {
-        // Mengubah status
+
         it->status = "Lunas & Dikirim";
         
-        // 2. AUTO-UPDATE JSON DETIK INI JUGA
-        // Urutan: Barang, Pesanan, Rute, User
+
         simpanData(db_barang, daftar_pesanan, db_rute, db_user);
 
         cout << "\n[+] Status pesanan berhasil diperbarui!\n";

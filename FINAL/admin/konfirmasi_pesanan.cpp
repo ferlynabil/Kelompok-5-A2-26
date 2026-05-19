@@ -2,50 +2,52 @@
 #include <vector>
 #include <string>
 #include <iomanip>
+#include <conio.h>
 #include "admin.h"
 #include "../database_handler.h"
 
 using namespace std;
 
-// 1. UPDATE PARAMETER: Tambahkan db_barang, db_rute, db_user
-void konfirmasiPesanan(vector<Pesanan>& daftar_pesanan, vector<Barang>& db_barang, vector<Rute>& db_rute, vector<Pengguna>& db_user) {
+void konfirmasiPesanan(vector<Pesanan>& daftar_pesanan,
+                       vector<Barang>&  db_barang,
+                       vector<Rute>&    db_rute,
+                       vector<Pengguna>& db_user) {
+
+    system("cls");
+    cout << "\n=== KONFIRMASI PESANAN MASUK ===\n";
+
     if (daftar_pesanan.empty()) {
-        system("cls");
-        cout << "\n=== KONFIRMASI PESANAN MASUK ===\n";
-        cout << "Tidak ada pesanan untuk dikonfirmasi.\n";
-        cout << "\nTekan Enter untuk kembali...";
-        string dummy;
-        getline(cin >> ws, dummy);
+        cout << "Tidak ada pesanan sama sekali.\n";
+        cout << "\nTekan sembarang tombol untuk kembali...";
+        _getch();
         return;
     }
 
-    system("cls");
-    cout << "\n=== DAFTAR PESANAN MENUNGGU KONFIRMASI ===\n";
+
     cout << "-------------------------------------------------------------------------------\n";
-    cout << setw(10) << left << "ID" 
-         << setw(20) << "Nama Barang" 
-         << setw(10) << "Jumlah" 
-         << setw(15) << "Total" 
-         << setw(15) << "Status\n";
+    cout << setw(12) << left << "ID"
+         << setw(22) << "Nama Barang"
+         << setw(8)  << "Qty"
+         << setw(16) << "Total (Rp)"
+         << "Status\n";
     cout << "-------------------------------------------------------------------------------\n";
 
-    bool ada_pesanan_baru = false;
+    bool ada = false;
     for (const auto& p : daftar_pesanan) {
         if (p.status == "Menunggu Konfirmasi") {
-            cout << setw(10) << left << p.id_pesanan 
-                 << setw(20) << p.nama_barang 
-                 << setw(10) << p.jumlah 
-                 << setw(15) << fixed << setprecision(0) << p.total_bayar 
-                 << setw(15) << p.status << "\n";
-            ada_pesanan_baru = true;
+            cout << setw(12) << left << p.id_pesanan
+                 << setw(22) << p.nama_barang
+                 << setw(8)  << p.jumlah
+                 << setw(16) << fixed << setprecision(0) << p.total_bayar
+                 << p.status << "\n";
+            ada = true;
         }
     }
 
-    if (!ada_pesanan_baru) {
-        cout << "\n[~] Semua pesanan sudah dikonfirmasi.\n";
-        cout << "\nTekan Enter untuk kembali...";
-        string dummy;
-        getline(cin >> ws, dummy);
+    if (!ada) {
+        cout << "\n[~] Tidak ada pesanan yang menunggu konfirmasi.\n";
+        cout << "\nTekan sembarang tombol untuk kembali...";
+        _getch();
         return;
     }
     cout << "-------------------------------------------------------------------------------\n";
@@ -57,39 +59,62 @@ void konfirmasiPesanan(vector<Pesanan>& daftar_pesanan, vector<Barang>& db_baran
 
     if (id_cari == "0") return;
 
-    auto it = daftar_pesanan.begin();
-    bool ditemukan = false;
-    for (; it != daftar_pesanan.end(); ++it) {
-        if (it->id_pesanan == id_cari && it->status == "Menunggu Konfirmasi") {
-            ditemukan = true;
+
+    auto it = daftar_pesanan.end();
+    for (auto i = daftar_pesanan.begin(); i != daftar_pesanan.end(); ++i) {
+        if (i->id_pesanan == id_cari && i->status == "Menunggu Konfirmasi") {
+            it = i;
             break;
         }
     }
 
-    if (!ditemukan) {
-        cout << "\n[-] ID Pesanan tidak ditemukan atau sudah dikonfirmasi.\n";
-        system("pause");
+    if (it == daftar_pesanan.end()) {
+        cout << "\n[-] ID Pesanan tidak ditemukan atau bukan status \"Menunggu Konfirmasi\".\n";
+        cout << "\nTekan sembarang tombol untuk kembali...";
+        _getch();
         return;
     }
 
-    cout << "\nApakah Anda ingin mengkonfirmasi pesanan [" << it->nama_barang << "]? (y/n): ";
-    char pilih;
-    cin >> pilih;
+    cout << "\nDetail Pesanan:\n";
+    cout << "  Nama Barang : " << it->nama_barang << "\n";
+    cout << "  Jumlah      : " << it->jumlah << " pcs\n";
+    cout << "  Total       : Rp" << (long long)it->total_bayar << "\n";
+    cout << "  Tipe Beli   : " << it->tipe_beli << "\n\n";
 
-    if (pilih == 'y' || pilih == 'Y') {
-        // Mengubah status
+
+    cout << "Pilih tindakan:\n";
+    cout << "  [1] Terima  -> status menjadi \"Menunggu Pembayaran\"\n";
+    cout << "  [2] Tolak   -> status menjadi \"Ditolak\"\n";
+    cout << "  [0] Batal\n";
+    cout << "Pilihan: ";
+
+    string pilihan;
+    getline(cin, pilihan);
+
+    if (pilihan == "1") {
         it->status = "Menunggu Pembayaran";
-        
-        // 2. AUTO-UPDATE JSON DETIK INI JUGA
-        // Urutan parameter: Barang, Pesanan, Rute, User
         simpanData(db_barang, daftar_pesanan, db_rute, db_user);
 
-        cout << "\n[+] Pesanan berhasil dikonfirmasi!\n";
-        cout << "[+] Data Pesanan di JSON otomatis diperbarui!\n";
+        system("cls");
+        cout << "\n[+] Pesanan diterima!\n";
+        cout << "[+] Status berubah -> \"Menunggu Pembayaran\".\n";
         cout << "[+] Pembeli sekarang dapat melakukan pembayaran.\n";
+        cout << "[+] Data JSON diperbarui otomatis.\n";
+
+    } else if (pilihan == "2") {
+        it->status = "Ditolak";
+        simpanData(db_barang, daftar_pesanan, db_rute, db_user);
+
+        system("cls");
+        cout << "\n[!] Pesanan ditolak.\n";
+        cout << "[!] Status berubah -> \"Ditolak\".\n";
+        cout << "[+] Data JSON diperbarui otomatis.\n";
+
     } else {
-        cout << "\n[~] Konfirmasi dibatalkan.\n";
+        system("cls");
+        cout << "\n[~] Dibatalkan, tidak ada perubahan.\n";
     }
 
-    system("pause");
+    cout << "\nTekan sembarang tombol untuk kembali...";
+    _getch();
 }

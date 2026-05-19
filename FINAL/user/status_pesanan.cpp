@@ -4,21 +4,45 @@
 #include <string>
 #include "../database_handler.h"
 
+static std::string warnaStatus(const std::string& status) {
+    if (status == "Menunggu Konfirmasi")  return "\033[1;33m"; 
+    if (status == "Menunggu Pembayaran")  return "\033[1;36m"; 
+    if (status == "Ditolak")              return "\033[1;31m"; 
+    if (status == "Lunas")                return "\033[1;32m";
+    if (status == "Lunas & Dikirim")      return "\033[1;34m"; 
+    return "\033[0m";
+}
+
+static std::string keteranganStatus(const std::string& status) {
+    if (status == "Menunggu Konfirmasi")
+        return "  -> Pesanan Anda sedang menunggu disetujui Admin.";
+    if (status == "Menunggu Pembayaran")
+        return "  -> Silakan lakukan pembayaran di menu Bayar Pesanan.";
+    if (status == "Ditolak")
+        return "  -> Pesanan Anda ditolak Admin. Silakan hubungi toko.";
+    if (status == "Lunas")
+        return "  -> Pembayaran berhasil. Terima kasih!";
+    if (status == "Lunas & Dikirim")
+        return "  -> Barang sedang dalam perjalanan ke alamat Anda.";
+    return "";
+}
+
 void cekStatusPesanan(std::vector<Pesanan>* trxs) {
     bool berjalan = true;
 
     while (berjalan) {
-        if (trxs->empty()) {
-            std::cout << "\n\033[1;31mBelum ada pesanan yang tercatat.\033[0m\n";
-            std::cout << "\n\033[1;36mTekan Enter untuk kembali...\033[0m";
-            while (_getch() != '\r');
-            return;
-        }
 
         std::cout << "\033[2J\033[1;1H";
         std::cout << "\033[1;35m========================================\033[0m\n";
         std::cout << "\033[1;37m          STATUS PESANAN ANDA           \033[0m\n";
         std::cout << "\033[1;35m========================================\033[0m\n\n";
+
+        if (trxs->empty()) {
+            std::cout << "\033[1;31m  Belum ada pesanan yang tercatat.\033[0m\n\n";
+            std::cout << "\033[1;36mTekan Enter untuk kembali...\033[0m";
+            while (_getch() != '\r');
+            return;
+        }
 
         std::cout << std::left
                   << std::setw(12) << "ID Pesanan"
@@ -29,20 +53,20 @@ void cekStatusPesanan(std::vector<Pesanan>* trxs) {
         std::cout << "-----------------------------------------------------------------------\n";
 
         for (const auto& t : *trxs) {
-            std::string warna = "\033[0m";
-            if (t.status == "Menunggu Konfirmasi") warna = "\033[1;33m";
-            else if (t.status == "Menunggu Pembayaran") warna = "\033[1;36m";
-            else if (t.status == "Lunas") warna = "\033[1;32m";
-            else if (t.status == "Lunas & Dikirim") warna = "\033[1;34m";
-
             std::cout << std::left
                       << std::setw(12) << t.id_pesanan
                       << std::setw(22) << t.nama_barang
                       << std::setw(8)  << t.jumlah
                       << std::setw(16) << (long long)t.total_bayar
-                      << warna << t.status << "\033[0m\n";
+                      << warnaStatus(t.status) << t.status << "\033[0m\n";
         }
         std::cout << "-----------------------------------------------------------------------\n";
+
+        std::cout << "\n  \033[1;33m[Menunggu Konfirmasi]\033[0m "
+                  << "\033[1;36m[Menunggu Pembayaran]\033[0m "
+                  << "\033[1;31m[Ditolak]\033[0m\n  "
+                  << "\033[1;32m[Lunas]\033[0m "
+                  << "\033[1;34m[Lunas & Dikirim]\033[0m\n";
 
         std::cout << "\nMasukkan ID Pesanan untuk melihat detail\n";
         std::cout << "(Ketik \033[1;33m'0'\033[0m untuk kembali ke menu): ";
@@ -79,30 +103,22 @@ void cekStatusPesanan(std::vector<Pesanan>* trxs) {
         std::cout << "\033[1;35m========================================\033[0m\n\n";
 
         std::cout << "  ID Pesanan    : \033[1;36m" << ditemukan->id_pesanan   << "\033[0m\n";
-        std::cout << "  Nama Barang   : " << ditemukan->nama_barang << "\n";
-        std::cout << "  Jumlah        : " << ditemukan->jumlah      << " pcs\n";
+        std::cout << "  Nama Barang   : "            << ditemukan->nama_barang  << "\n";
+        std::cout << "  Jumlah        : "            << ditemukan->jumlah       << " pcs\n";
         std::cout << "  Total Bayar   : \033[1;33mRp" << (long long)ditemukan->total_bayar << "\033[0m\n";
-        std::cout << "  Tipe Beli     : " << ditemukan->tipe_beli   << "\n";
+        std::cout << "  Tipe Beli     : "            << ditemukan->tipe_beli    << "\n";
+        std::cout << "  Status        : "
+                  << warnaStatus(ditemukan->status)
+                  << ditemukan->status << "\033[0m\n";
 
-        std::string warna = "\033[0m";
-        std::string keterangan = "";
-        if (ditemukan->status == "Menunggu Konfirmasi") {
-            warna = "\033[1;33m";
-            keterangan = "  -> Pesanan Anda sedang menunggu disetujui Admin.";
-        } else if (ditemukan->status == "Menunggu Pembayaran") {
-            warna = "\033[1;36m";
-            keterangan = "  -> Silakan lakukan pembayaran di menu Bayar Pesanan.";
-        } else if (ditemukan->status == "Lunas") {
-            warna = "\033[1;32m";
-            keterangan = "  -> Pembayaran berhasil. Terima kasih!";
-        } else if (ditemukan->status == "Lunas & Dikirim") {
-            warna = "\033[1;34m";
-            keterangan = "  -> Barang sedang dalam perjalanan ke alamat Anda.";
+        std::string ket = keteranganStatus(ditemukan->status);
+        if (!ket.empty()) {
+            std::cout << "\n\033[1;37m" << ket << "\033[0m\n";
         }
 
-        std::cout << "  Status        : " << warna << ditemukan->status << "\033[0m\n";
-        if (!keterangan.empty()) {
-            std::cout << "\033[1;37m" << keterangan << "\033[0m\n";
+        if (ditemukan->status == "Menunggu Pembayaran") {
+            std::cout << "\n\033[1;32m  [->] Pergi ke menu \033[1;33m\"Bayar Pesanan\"\033[1;32m"
+                      << " untuk melunasi transaksi ini.\033[0m\n";
         }
 
         std::cout << "\n\033[1;35m========================================\033[0m\n";

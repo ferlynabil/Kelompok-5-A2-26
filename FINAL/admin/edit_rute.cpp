@@ -8,7 +8,6 @@
 
 using namespace std;
 
-// 1. UPDATE PARAMETER: Tambahkan db_barang, db_pesanan, db_user
 void editRute(vector<Rute>& daftar_rute, vector<Barang>& db_barang, vector<Pesanan>& db_pesanan, vector<Pengguna>& db_user) {
     if (daftar_rute.empty()) {
         system("cls");
@@ -209,13 +208,11 @@ void editRute(vector<Rute>& daftar_rute, vector<Barang>& db_barang, vector<Pesan
                     system("pause");
                 }
                 else if (posisi_edit == 5) {
-                    // Validasi sebelum simpan: Pastikan ada minimal 1 layanan
                     if (it->biaya_reguler <= 0 && it->biaya_standar <= 0 && it->biaya_premium <= 0) {
                         cout << "\n[-] Peringatan: Anda mengosongkan semua harga pengiriman.\n";
                         cout << "Rute ini tidak akan bisa dipilih oleh pelanggan jika tidak ada layanan yang aktif.\n";
                         system("pause");
                     }
-                    // 2. AUTO SAVE JSON SAAT SELESAI
                     simpanData(db_barang, db_pesanan, daftar_rute, db_user);
                     sedang_edit = false;
                 }

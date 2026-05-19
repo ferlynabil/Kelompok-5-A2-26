@@ -19,10 +19,9 @@ void konfirmasiPesanan(vector<Pesanan>& daftar_pesanan,
     if (daftar_pesanan.empty()) {
         cout << "Tidak ada pesanan sama sekali.\n";
         cout << "\nTekan sembarang tombol untuk kembali...";
-        _getch();
+        _getch(); // Menunggu sembarang input keyboard tanpa perlu tekan Enter
         return;
     }
-
 
     cout << "-------------------------------------------------------------------------------\n";
     cout << setw(12) << left << "ID"
@@ -32,7 +31,7 @@ void konfirmasiPesanan(vector<Pesanan>& daftar_pesanan,
          << "Status\n";
     cout << "-------------------------------------------------------------------------------\n";
 
-    bool ada = false;
+    bool ada = false; //penanda jika ada pesanan yang butuh konfirmasi
     for (const auto& p : daftar_pesanan) {
         if (p.status == "Menunggu Konfirmasi") {
             cout << setw(12) << left << p.id_pesanan
@@ -40,7 +39,7 @@ void konfirmasiPesanan(vector<Pesanan>& daftar_pesanan,
                  << setw(8)  << p.jumlah
                  << setw(16) << fixed << setprecision(0) << p.total_bayar
                  << p.status << "\n";
-            ada = true;
+            ada = true; 
         }
     }
 
@@ -59,11 +58,10 @@ void konfirmasiPesanan(vector<Pesanan>& daftar_pesanan,
 
     if (id_cari == "0") return;
 
-
     auto it = daftar_pesanan.end();
     for (auto i = daftar_pesanan.begin(); i != daftar_pesanan.end(); ++i) {
         if (i->id_pesanan == id_cari && i->status == "Menunggu Konfirmasi") {
-            it = i;
+            it = i; // Simpan posisi iterator jika ditemukan
             break;
         }
     }
@@ -78,9 +76,8 @@ void konfirmasiPesanan(vector<Pesanan>& daftar_pesanan,
     cout << "\nDetail Pesanan:\n";
     cout << "  Nama Barang : " << it->nama_barang << "\n";
     cout << "  Jumlah      : " << it->jumlah << " pcs\n";
-    cout << "  Total       : Rp" << (long long)it->total_bayar << "\n";
+    cout << "  Total       : Rp" << (long long)it->total_bayar << "\n"; 
     cout << "  Tipe Beli   : " << it->tipe_beli << "\n\n";
-
 
     cout << "Pilih tindakan:\n";
     cout << "  [1] Terima  -> status menjadi \"Menunggu Pembayaran\"\n";

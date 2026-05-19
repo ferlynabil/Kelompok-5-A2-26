@@ -1,32 +1,36 @@
-#include <iostream>
-#include <string>
-#include <cctype>
-#include <conio.h>
-#include <vector>
-#include <iomanip>
-#include "admin.h"
-#include "../database_handler.h"
+// Memasukkan library standar C++ yang dibutuhkan
+#include <iostream>  
+#include <string>    
+#include <cctype>    // Untuk fungsi manipulasi karakter seperti isdigit()
+#include <conio.h>   // Untuk fungsi getch() buat input keyboard
+#include <vector>    // Untuk pakai vektor
+#include <iomanip>   // setw() buat ngerapiin tabel
+#include "admin.h"           
+#include "../database_handler.h" 
 
-using namespace std;
+using namespace std; 
 
 void editBarang(vector<Barang>& daftar_barang, vector<Pesanan>& db_pesanan, vector<Rute>& db_rute, vector<Pengguna>& db_user) {
+    
     if (daftar_barang.empty()) {
-        system("cls");
+        system("cls"); 
         cout << "\n=== EDIT DATA BARANG ===\n";
         cout << "Gudang masih kosong!\n";
         cout << "\nTekan Enter untuk kembali...";
         string dummy;
-        getline(cin, dummy);
-        return;
+        getline(cin, dummy); // Menahan layar sampai user menekan Enter
+        return; 
     }
 
-    char edit_lagi;
-    static bool first_run_edit = true;
+    char edit_lagi; 
+    static bool first_run_edit = true; //Pakai Variabel statis biar nilai yang dipanggil dipertahankan walau dipanggil berulang kali (bug buffer input cin)
 
     do {
         system("cls");
         cout << "\n=== DAFTAR BARANG (REFERENSI EDIT) ===\n";
         cout << "-------------------------------------------------------------------------------\n";
+        
+        // setw(15) mengatur lebar kolom sebanyak 15 karakter, leftnya buat rata kiri
         cout << setw(15) << left << "ID" 
              << setw(20) << "Nama Barang" 
              << setw(12) << "Harga" 
@@ -34,6 +38,7 @@ void editBarang(vector<Barang>& daftar_barang, vector<Pesanan>& db_pesanan, vect
              << setw(15) << "Satuan" 
              << setw(5) << "Stok\n";
         cout << "-------------------------------------------------------------------------------\n";
+        
         for (const auto& brg : daftar_barang) {
             cout << setw(15) << left << brg.id_barang 
                  << setw(20) << brg.nama_barang 
@@ -47,32 +52,36 @@ void editBarang(vector<Barang>& daftar_barang, vector<Pesanan>& db_pesanan, vect
         string id_cari;
         cout << "\nMasukkan ID Barang yang ingin diedit (Ketik '0' untuk batal dan kembali): "; 
         
+        // Mengambil input string beserta spasinya 
         getline(cin, id_cari);
+        
         if (first_run_edit) {
-            if (id_cari.empty()) {
-                getline(cin, id_cari);
+            if (id_cari.empty()) { // Jika getline malah menangkap enter kosong
+                getline(cin, id_cari); // Ambil input sekali lagi
             }
-            first_run_edit = false;
+            first_run_edit = false; 
         }
 
+        // Validasi jika input ID kosong
         if (id_cari.empty()) {
             cout << "\n[-] Error: ID Barang tidak boleh kosong!\n";
             cout << "\nIngin coba lagi? (y/n): ";
             string ans;
             getline(cin, ans);
-            edit_lagi = ans.empty() ? 'n' : ans[0];
-            continue;
+        //Jika kosong, asumsikan 'n'.
+            edit_lagi = ans.empty() ? 'n' : ans[0]; 
+            continue; 
         }
 
         if (id_cari == "0") {
             cout << "\n[~] Proses edit dibatalkan. Kembali ke Dashboard Admin...\n";
-            return;
+            return; 
         }
 
-        auto it = daftar_barang.begin();
-        for (; it != daftar_barang.end(); ++it) {
-            if (it->id_barang == id_cari) {
-                break;
+        auto it = daftar_barang.begin(); 
+        for (; it != daftar_barang.end(); ++it) { 
+            if (it->id_barang == id_cari) { 
+                break; 
             }
         }
 
@@ -86,9 +95,11 @@ void editBarang(vector<Barang>& daftar_barang, vector<Pesanan>& db_pesanan, vect
         }
 
         bool sedang_edit = true;
+        // Vector berisi opsi apa saja yang bisa diedit
         vector<string> menu_edit = {"Nama Barang", "Harga", "Satuan", "Berat", "Stok", "Selesai Edit"};
-        int posisi_edit = 0;
+        int posisi_edit = 0; // Menyimpan indeks menu yang sedang dipilih
 
+        // panah keyboard
         while (sedang_edit) {
             system("cls");
             cout << "\n=== EDIT DATA BARANG ===\n";
@@ -102,6 +113,7 @@ void editBarang(vector<Barang>& daftar_barang, vector<Pesanan>& db_pesanan, vect
 
             for (int i = 0; i < menu_edit.size(); i++) {
                 if (i == posisi_edit) {
+                    // \033[1;32m adalah kode ANSI untuk warna teks hijau, \033[0m untuk mengembalikan ke warna standar
                     cout << "  > \033[1;32m" << menu_edit[i] << "\033[0m <\n";
                 } else {
                     cout << "    " << menu_edit[i] << "\n";
@@ -110,13 +122,20 @@ void editBarang(vector<Barang>& daftar_barang, vector<Pesanan>& db_pesanan, vect
 
             char tombol = _getch();
 
+            // Logika panah atas dan bawah. 72 adalah kode panah atas, 80 panah bawah di sistem Windows.
             if (tombol == 72 && posisi_edit > 0) {
-                posisi_edit--;
+                posisi_edit--; 
             } else if (tombol == 80 && posisi_edit < menu_edit.size() - 1) {
-                posisi_edit++;
-            } else if (tombol == '\r') {
+                posisi_edit++; 
+            } else if (tombol == '\r') { // '\r' adalah karakter Carriage Return (Tombol Enter)
                 system("cls");
-                if (posisi_edit == 0) {
+                
+                if (posisi_edit == 5) {
+                    simpanData(daftar_barang, db_pesanan, db_rute, db_user);
+                    sedang_edit = false; 
+                }
+                
+                else if (posisi_edit == 0) {
                     cout << "Ubah Nama Barang : ";
                     string input_nama;
                     getline(cin, input_nama);
@@ -125,13 +144,14 @@ void editBarang(vector<Barang>& daftar_barang, vector<Pesanan>& db_pesanan, vect
                         cout << "\n[-] Error: Nama Barang tidak boleh kosong!\n";
                         cout << "\nTekan Enter untuk kembali...";
                         getline(cin, input_nama);
-                        continue;
+                        continue; 
                     }
-                    it->nama_barang = input_nama;
+                    it->nama_barang = input_nama; 
                     cout << "\n[+] Nama Barang berhasil diubah!\n";
                     cout << "Tekan Enter untuk kembali...";
                     getline(cin, input_nama);
                 } 
+                
                 else if (posisi_edit == 1) {
                     string input_harga;
                     bool harga_valid = true;
@@ -146,7 +166,7 @@ void editBarang(vector<Barang>& daftar_barang, vector<Pesanan>& db_pesanan, vect
                     }
                     
                     for (char c : input_harga) {
-                        if (!isdigit(c)) {
+                        if (!isdigit(c)) { // isdigit mengecek apakah karakter adalah angka (0-9)
                             harga_valid = false;
                             break;
                         }
@@ -158,11 +178,12 @@ void editBarang(vector<Barang>& daftar_barang, vector<Pesanan>& db_pesanan, vect
                         getline(cin, input_harga);
                         continue;
                     }
-                    it->harga = stod(input_harga);
+                    it->harga = stod(input_harga); //mengubah string jadi angka desimal
                     cout << "\n[+] Harga berhasil diubah!\n";
                     cout << "Tekan Enter untuk kembali...";
                     getline(cin, input_harga);
                 }
+                
                 else if (posisi_edit == 2) {
                     vector<string> list_satuan = {"Kilogram (kg)", "Gram (g)", "Liter (L)", "Buah/Pcs", "Sak", "Meter (m)"};
                     int posisi_satuan = 0;
@@ -188,8 +209,8 @@ void editBarang(vector<Barang>& daftar_barang, vector<Pesanan>& db_pesanan, vect
                         } else if (tombol_satuan == 80 && posisi_satuan < list_satuan.size() - 1) {
                             posisi_satuan++;
                         } else if (tombol_satuan == '\r') {
-                            it->satuan = list_satuan[posisi_satuan];
-                            memilih_satuan = false;
+                            it->satuan = list_satuan[posisi_satuan]; 
+                            memilih_satuan = false; 
                         }
                     }
                     cout << "\n[+] Satuan berhasil diubah menjadi " << it->satuan << "!\n";
@@ -197,6 +218,8 @@ void editBarang(vector<Barang>& daftar_barang, vector<Pesanan>& db_pesanan, vect
                     string dummy;
                     getline(cin, dummy);
                 }
+                
+                // Jika "Berat" dipilih
                 else if (posisi_edit == 3) {
                     string input_berat;
                     bool berat_valid = true;
@@ -223,11 +246,12 @@ void editBarang(vector<Barang>& daftar_barang, vector<Pesanan>& db_pesanan, vect
                         getline(cin, input_berat);
                         continue;
                     }
-                    it->berat = stod(input_berat);
+                    it->berat = stod(input_berat); // Ubah teks input menjadi double
                     cout << "\n[+] Berat berhasil diubah!\n";
                     cout << "Tekan Enter untuk kembali...";
                     getline(cin, input_berat);
                 }
+                
                 else if (posisi_edit == 4) {
                     string input_stok;
                     bool stok_valid = true;
@@ -254,14 +278,10 @@ void editBarang(vector<Barang>& daftar_barang, vector<Pesanan>& db_pesanan, vect
                         getline(cin, input_stok);
                         continue;
                     }
-                    it->stok = stoi(input_stok);
+                    it->stok = stoi(input_stok); 
                     cout << "\n[+] Stok berhasil diubah!\n";
                     cout << "Tekan Enter untuk kembali...";
                     getline(cin, input_stok);
-                }
-                else if (posisi_edit == 5) {
-                    simpanData(daftar_barang, db_pesanan, db_rute, db_user);
-                    sedang_edit = false;
                 }
             }
         }
@@ -274,5 +294,5 @@ void editBarang(vector<Barang>& daftar_barang, vector<Pesanan>& db_pesanan, vect
         getline(cin, ans);
         edit_lagi = ans.empty() ? 'n' : ans[0];
 
-    } while (edit_lagi == 'y' || edit_lagi == 'Y');
+    } while (edit_lagi == 'y' || edit_lagi == 'Y'); 
 }

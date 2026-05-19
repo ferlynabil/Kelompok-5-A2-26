@@ -4,13 +4,12 @@
 #include <string>
 #include "../database_handler.h"
 
-// Warna ANSI per status
 static std::string warnaStatus(const std::string& status) {
-    if (status == "Menunggu Konfirmasi")  return "\033[1;33m"; // Kuning
-    if (status == "Menunggu Pembayaran")  return "\033[1;36m"; // Cyan
-    if (status == "Ditolak")              return "\033[1;31m"; // Merah
-    if (status == "Lunas")                return "\033[1;32m"; // Hijau
-    if (status == "Lunas & Dikirim")      return "\033[1;34m"; // Biru
+    if (status == "Menunggu Konfirmasi")  return "\033[1;33m"; 
+    if (status == "Menunggu Pembayaran")  return "\033[1;36m"; 
+    if (status == "Ditolak")              return "\033[1;31m"; 
+    if (status == "Lunas")                return "\033[1;32m";
+    if (status == "Lunas & Dikirim")      return "\033[1;34m"; 
     return "\033[0m";
 }
 
@@ -45,7 +44,6 @@ void cekStatusPesanan(std::vector<Pesanan>* trxs) {
             return;
         }
 
-        // Header tabel
         std::cout << std::left
                   << std::setw(12) << "ID Pesanan"
                   << std::setw(22) << "Nama Barang"
@@ -64,7 +62,6 @@ void cekStatusPesanan(std::vector<Pesanan>* trxs) {
         }
         std::cout << "-----------------------------------------------------------------------\n";
 
-        // Legend
         std::cout << "\n  \033[1;33m[Menunggu Konfirmasi]\033[0m "
                   << "\033[1;36m[Menunggu Pembayaran]\033[0m "
                   << "\033[1;31m[Ditolak]\033[0m\n  "

@@ -81,7 +81,7 @@ void konfirmasiPesanan(vector<Pesanan>& daftar_pesanan,
     cout << "  Total       : Rp" << (long long)it->total_bayar << "\n";
     cout << "  Tipe Beli   : " << it->tipe_beli << "\n\n";
 
-    // Pilihan tindakan
+
     cout << "Pilih tindakan:\n";
     cout << "  [1] Terima  -> status menjadi \"Menunggu Pembayaran\"\n";
     cout << "  [2] Tolak   -> status menjadi \"Ditolak\"\n";

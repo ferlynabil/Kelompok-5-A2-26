@@ -25,7 +25,6 @@ void payOrder(std::vector<Pesanan>* trxs,
             return;
         }
 
-        // Kumpulkan pesanan yang bisa dibayar (status "Menunggu Pembayaran")
         std::vector<Pesanan*> bisaBayar;
         for (auto& t : *trxs) {
             if (t.status == "Menunggu Pembayaran") {
@@ -33,7 +32,6 @@ void payOrder(std::vector<Pesanan>* trxs,
             }
         }
 
-        // Tampilkan SEMUA pesanan beserta statusnya (dengan warna)
         std::cout << std::left
                   << std::setw(12) << "ID Pesanan"
                   << std::setw(24) << "Nama Barang"
@@ -62,7 +60,6 @@ void payOrder(std::vector<Pesanan>* trxs,
                   << "\033[1;32m[Lunas]\033[0m "
                   << "\033[1;34m[Lunas & Dikirim]\033[0m\n";
 
-        // Jika tidak ada yang bisa dibayar, beri tahu user
         if (bisaBayar.empty()) {
             std::cout << "\n\033[1;33m  [!] Belum ada pesanan yang siap dibayar.\033[0m\n";
             std::cout << "\033[1;37m      Pesanan berstatus \033[1;33m\"Menunggu Konfirmasi\"\033[1;37m\033[0m\n";
@@ -87,7 +84,7 @@ void payOrder(std::vector<Pesanan>* trxs,
             return;
         }
 
-        // Cari di daftar yang bisa dibayar dulu
+
         Pesanan* target = nullptr;
         for (auto* t : bisaBayar) {
             if (t->id_pesanan == inputId) {
@@ -96,7 +93,6 @@ void payOrder(std::vector<Pesanan>* trxs,
             }
         }
 
-        // ID ada tapi statusnya tidak bisa dibayar → beri pesan yang jelas
         if (target == nullptr) {
             std::string statusnya = "";
             for (const auto& t : *trxs) {
@@ -125,7 +121,6 @@ void payOrder(std::vector<Pesanan>* trxs,
             continue;
         }
 
-        // Tampilkan ringkasan tagihan
         std::cout << "\033[2J\033[1;1H";
         std::cout << "\033[1;35m========================================\033[0m\n";
         std::cout << "\033[1;37m           RINGKASAN TAGIHAN            \033[0m\n";
@@ -136,13 +131,11 @@ void payOrder(std::vector<Pesanan>* trxs,
         std::cout << "  Jumlah        : "            << target->jumlah       << " pcs\n";
         std::cout << "  Tipe Beli     : "            << target->tipe_beli    << "\n";
         
-        // SUDAH DIGANTI: Menggunakan '=' biasa agar aman dari encoding error
         std::cout << "\033[1;33m  =================================\033[0m\n"; 
         
         std::cout << "\033[1;32m  TOTAL BAYAR  : Rp"
                   << (long long)target->total_bayar << "\033[0m\n\n";
 
-        // Input nominal pembayaran
         long long bayar  = 0;
         bool       bayarOk = false;
 
@@ -182,7 +175,6 @@ void payOrder(std::vector<Pesanan>* trxs,
         std::cout << "\n  Uang Diterima : Rp" << bayar << "\n";
         std::cout << "  Kembalian     : \033[1;32mRp" << kembalian << "\033[0m\n\n";
 
-        // Konfirmasi akhir
         std::vector<std::string> konfOpts = {"Ya, Konfirmasi Pembayaran", "Batal"};
         int konfirmasi = inquirerMenuUser("Apakah pembayaran sudah benar?", konfOpts);
 
@@ -193,13 +185,11 @@ void payOrder(std::vector<Pesanan>* trxs,
             continue;
         }
 
-        // Update status → "Lunas"
         target->status = "Lunas";
 
-        // Simpan ke JSON sekarang juga
+
         simpanData(*db_barang, *trxs, *db_rute, *db_user);
 
-        // Tampilkan struk
         std::cout << "\033[2J\033[1;1H";
         std::cout << "\033[1;35m========================================\033[0m\n";
         std::cout << "\033[1;32m        PEMBAYARAN BERHASIL!            \033[0m\n";

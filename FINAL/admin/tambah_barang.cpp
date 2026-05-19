@@ -80,7 +80,7 @@ void tambahBarang(vector<Barang>& daftar_barang, vector<Pesanan>& db_pesanan,
         while (str_urutan.length() < 3) str_urutan = "0" + str_urutan; // padding jadi 3 digit
         barang_baru.id_barang = prefix_pilihan + "-" + str_urutan;
 
-        // Input harga, validasi hanya angka
+        // Input harga
         system("cls");
         cout << "\n=== TAMBAH BARANG ===\n";
         cout << "Nama Barang : " << barang_baru.nama_barang << "\n";
@@ -114,6 +114,7 @@ void tambahBarang(vector<Barang>& daftar_barang, vector<Pesanan>& db_pesanan,
         barang_baru.harga = stod(input_harga); 
 
      
+        // Pilihan satuan
         vector<string> list_satuan = {"Kilogram (kg)", "Gram (g)", "Liter (L)", "Buah/Pcs", "Sak", "Meter (m)"};
         int posisi_satuan = 0;
         bool memilih = true;
@@ -142,7 +143,7 @@ void tambahBarang(vector<Barang>& daftar_barang, vector<Pesanan>& db_pesanan,
             }
         }
 
-        // Input berat per satuan, validasi hanya angka
+        // Input berat per satuan
         system("cls");
         cout << "\n=== TAMBAH BARANG ===\n";
         cout << "ID Barang   : " << barang_baru.id_barang << "\n";
@@ -176,7 +177,7 @@ void tambahBarang(vector<Barang>& daftar_barang, vector<Pesanan>& db_pesanan,
         }
         barang_baru.berat = stod(input_berat);
 
-        // Input stok awal, validasi hanya angka
+        // Input stok awal 
         string input_stok;
         bool stok_valid = true;
         cout << "Stok Awal  (hanya angka) : ";

@@ -12,7 +12,6 @@ void tambahRute(vector<Rute>& daftar_rute, vector<Barang>& db_barang,
 
     char tambah_lagi;
 
-    // Lambda: input nama kota, hanya huruf dan spasi, ketik '0' untuk batal
     auto inputTujuanValid = []() -> string {
         string in;
         while (true) {
@@ -37,7 +36,6 @@ void tambahRute(vector<Rute>& daftar_rute, vector<Barang>& db_barang,
         }
     };
 
-    // Lambda: input jarak dalam km, harus angka positif, boleh desimal
     auto inputJarakValid = []() -> double {
         string in;
         while (true) {
@@ -67,13 +65,12 @@ void tambahRute(vector<Rute>& daftar_rute, vector<Barang>& db_barang,
         }
     };
 
-    // Lambda: input harga layanan, return 0 jika layanan tidak tersedia
     auto inputHargaValid = [](const string& nama_layanan) -> double {
         string in;
         while (true) {
             cout << "> Harga " << nama_layanan << " : Rp ";
             getline(cin, in);
-            if (in.empty() || in == "0") return 0; // 0 = layanan tidak tersedia
+            if (in.empty() || in == "0") return 0;
             bool valid = true;
             for (char c : in) {
                 if (!isdigit(c)) { valid = false; break; }
@@ -86,7 +83,7 @@ void tambahRute(vector<Rute>& daftar_rute, vector<Barang>& db_barang,
         }
     };
 
-    // Lambda: input estimasi hari pengiriman, hanya angka (misal: 3-5)
+    
     auto inputEstimasiValid = [](const string& prompt) -> string {
         string in;
         while (true) {
@@ -148,7 +145,7 @@ void tambahRute(vector<Rute>& daftar_rute, vector<Barang>& db_barang,
                 cout << "\033[1;33m[!] Silakan isi minimal 1 harga layanan.\033[0m\n";
                 continue;
             }
-            break; // keluar loop input harga, lanjut ke simpan data
+            break; 
         }
 
         // Isi data rute baru dan simpan ke list + file JSON

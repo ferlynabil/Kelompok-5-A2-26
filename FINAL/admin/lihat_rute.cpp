@@ -11,7 +11,6 @@ using namespace std;
 
 void lihatRute(const vector<Rute>& daftar_rute) {
 
-    // Jika belum ada rute sama sekali, langsung tampilkan pesan kosong
     if (daftar_rute.empty()) {
         system("cls");
         cout << "\n=== DAFTAR RUTE PENGIRIMAN (DARI SAMARINDA) ===\n";
@@ -21,10 +20,10 @@ void lihatRute(const vector<Rute>& daftar_rute) {
             char tombol = _getch();
             if (tombol == '\r') break;
         }
-        return; // keluar fungsi, kembali ke menuAdmin
+        return; 
     }
 
-    // Pilihan urutan tampilan yang bisa dipilih user
+    // Pilihan urutan tampilan yang bisa user pilih
     vector<string> menu_sort = {
         "Tanpa Pengurutan (Sesuai Input)",
         "Kota Tujuan (A - Z)",
@@ -58,9 +57,8 @@ void lihatRute(const vector<Rute>& daftar_rute) {
     // Jika user pilih "Kembali", langsung keluar dari fungsi
     if (posisi_sort == 4) return;
 
-    // Urutkan data sesuai pilihan pakai insertion sort
     if (posisi_sort == 1) {
-        // Urutkan A-Z berdasarkan nama kota tujuan (case-insensitive)
+        // Urutkan A-Z berdasarkan nama kota tujuan
         for (int i = 1; i < data_tampil.size(); i++) {
             Rute kunci = data_tampil[i];
             int j = i - 1;

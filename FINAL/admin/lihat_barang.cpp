@@ -9,6 +9,7 @@
 
 using namespace std;
 
+// 1. Menggunakan const agar vector daftar_barang HANYA BISA DIBACA, tidak bisa tidak sengaja terhapus/terubah
 void lihatBarang(const vector<Barang>& daftar_barang) {
     if (daftar_barang.empty()) {
         system("cls");
@@ -31,6 +32,7 @@ void lihatBarang(const vector<Barang>& daftar_barang) {
     
     int posisi_sort = 0;
     bool memilih_sort = true;
+    
     vector<Barang> data_tampil = daftar_barang;
 
     while (memilih_sort) {
@@ -58,14 +60,16 @@ void lihatBarang(const vector<Barang>& daftar_barang) {
     }
 
     if (posisi_sort == 5) {
-        return;
+        return; 
     }
-
+    
     if (posisi_sort == 1) {
+        // Sort by Nama (A-Z)
         for (int i = 1; i < data_tampil.size(); i++) {
             Barang kunci = data_tampil[i];
             int j = i - 1;
             
+            // Konversi string ke lowercase sementara agar sorting tidak sensitif huruf besar kecil
             string kunci_nama = kunci.nama_barang;
             for (char& c : kunci_nama) c = tolower(c);
             
@@ -84,22 +88,26 @@ void lihatBarang(const vector<Barang>& daftar_barang) {
         }
     } 
     else if (posisi_sort == 2) {
+        // Sort by Harga (Termurah ke Termahal / Ascending)
         for (int i = 1; i < data_tampil.size(); i++) {
             Barang kunci = data_tampil[i];
             int j = i - 1;
             
+            // Geser elemen yang lebih besar ke kanan
             while (j >= 0 && data_tampil[j].harga > kunci.harga) {
                 data_tampil[j + 1] = data_tampil[j];
                 j--;
             }
-            data_tampil[j + 1] = kunci;
+            data_tampil[j + 1] = kunci; 
         }
     } 
     else if (posisi_sort == 3) {
+        // Sort by Harga (Termahal ke Termurah / Descending)
         for (int i = 1; i < data_tampil.size(); i++) {
             Barang kunci = data_tampil[i];
             int j = i - 1;
             
+            // Perbedaan hanya di tanda < 
             while (j >= 0 && data_tampil[j].harga < kunci.harga) {
                 data_tampil[j + 1] = data_tampil[j];
                 j--;
@@ -108,6 +116,7 @@ void lihatBarang(const vector<Barang>& daftar_barang) {
         }
     } 
     else if (posisi_sort == 4) {
+        // Sort by Stok (Paling Sedikit / Ascending)
         for (int i = 1; i < data_tampil.size(); i++) {
             Barang kunci = data_tampil[i];
             int j = i - 1;

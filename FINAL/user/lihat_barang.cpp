@@ -4,11 +4,6 @@
 #include <algorithm>
 #include <conio.h>
 
-<<<<<<< HEAD
-// ubah ke huruf kecil semua biar pencarian barang jadi lebih santai gak kaku
-=======
-
->>>>>>> ebf0d88b9941d1c50ebe3fc3f075b1196c8a1441
 std::string toLower(std::string s) {
     for(char &c : s) c = tolower(c);
     return s;
@@ -31,11 +26,6 @@ void displayItems(std::vector<Barang>* items) {
 
     int posisi = 0;
     bool milih = true;
-<<<<<<< HEAD
-    
-    // sengaja copy datanya di sini biar database aslinya gak rusak urutannya
-=======
->>>>>>> ebf0d88b9941d1c50ebe3fc3f075b1196c8a1441
     std::vector<Barang> dataTampil = *items; 
 
     while (milih) {

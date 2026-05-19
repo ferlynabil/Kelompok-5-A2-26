@@ -7,15 +7,16 @@
 
 using namespace std;
 
-
+//menggunakan & agar data asli ikut terhapus
 void hapusRute(vector<Rute>& daftar_rute, vector<Barang>& db_barang, vector<Pesanan>& db_pesanan, vector<Pengguna>& db_user) {
+    
     if (daftar_rute.empty()) {
         system("cls");
         cout << "\n=== HAPUS RUTE PENGIRIMAN ===\n";
         cout << "Data rute masih kosong!\n";
         cout << "\nTekan Enter untuk kembali...";
         string dummy;
-        getline(cin >> ws, dummy);
+        getline(cin >> ws, dummy); //membersihkan sisa spasi/enter di buffer
         return;
     }
 
@@ -29,6 +30,7 @@ void hapusRute(vector<Rute>& daftar_rute, vector<Barang>& db_barang, vector<Pesa
          << setw(15) << "Standar (Rp)"
          << setw(15) << "Premium (Rp)\n";
     cout << "----------------------------------------------------------------------------------------\n";
+    
     for (const auto& r : daftar_rute) {
         cout << setw(10) << left << r.id_rute 
              << setw(20) << r.tujuan 
@@ -41,17 +43,17 @@ void hapusRute(vector<Rute>& daftar_rute, vector<Barang>& db_barang, vector<Pesa
 
     string id_hapus;
     cout << "\nMasukkan ID Rute yang ingin dihapus (Ketik '0' untuk batal): ";
-    cin >> ws;
+    cin >> ws; 
     getline(cin, id_hapus);
 
-    if (id_hapus == "0") return;
+    if (id_hapus == "0") return; 
 
     auto it = daftar_rute.begin();
     bool ditemukan = false;
     for (; it != daftar_rute.end(); ++it) {
         if (it->id_rute == id_hapus) {
             ditemukan = true;
-            break;
+            break; 
         }
     }
 
@@ -66,9 +68,10 @@ void hapusRute(vector<Rute>& daftar_rute, vector<Barang>& db_barang, vector<Pesa
     cin >> konfirm;
 
     if (konfirm == 'y' || konfirm == 'Y') {
+        
+        // Menghapus elemen dari vector secara permanen berdasarkan posisi iterator
         daftar_rute.erase(it);
         
-
         simpanData(db_barang, db_pesanan, daftar_rute, db_user);
         
         cout << "\n[+] Rute berhasil dihapus!\n";
@@ -77,5 +80,5 @@ void hapusRute(vector<Rute>& daftar_rute, vector<Barang>& db_barang, vector<Pesa
         cout << "\n[~] Penghapusan dibatalkan.\n";
     }
 
-    system("pause");
+    system("pause"); // Menahan layar sampai pengguna menekan tombol sembarang
 }

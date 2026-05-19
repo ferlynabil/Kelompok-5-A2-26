@@ -7,8 +7,9 @@
 
 using namespace std;
 
-
+//menggunakan reference & agar data asli ikut terhapus
 void hapusBarang(vector<Barang>& daftar_barang, vector<Pesanan>& db_pesanan, vector<Rute>& db_rute, vector<Pengguna>& db_user) {
+    
     if (daftar_barang.empty()) {
         system("cls");
         cout << "\n=== HAPUS BARANG ===\n";
@@ -20,8 +21,9 @@ void hapusBarang(vector<Barang>& daftar_barang, vector<Pesanan>& db_pesanan, vec
     }
 
     char hapus_lagi;
-    static bool first_run_hapus = true;
+    static bool first_run_hapus = true; //untuk menangani sisa buffer/enter dari menu sebelumnya
 
+    // Loop utama agar bisa menghapus beberapa barang berturutturut
     do {
         system("cls");
         cout << "\n=== DAFTAR BARANG (REFERENSI HAPUS) ===\n";
@@ -33,6 +35,7 @@ void hapusBarang(vector<Barang>& daftar_barang, vector<Pesanan>& db_pesanan, vec
              << setw(15) << "Satuan" 
              << setw(5) << "Stok\n";
         cout << "-------------------------------------------------------------------------------\n";
+        
         for (const auto& brg : daftar_barang) {
             cout << setw(15) << left << brg.id_barang 
                  << setw(20) << brg.nama_barang 
@@ -43,7 +46,7 @@ void hapusBarang(vector<Barang>& daftar_barang, vector<Pesanan>& db_pesanan, vec
         }
         cout << "-------------------------------------------------------------------------------\n";
 
-        if (daftar_barang.empty()) break;
+        if (daftar_barang.empty()) break; 
 
         string id_hapus;
         cout << "\nMasukkan ID Barang yang ingin dihapus (Ketik '0' untuk batal dan kembali): "; 
@@ -51,7 +54,7 @@ void hapusBarang(vector<Barang>& daftar_barang, vector<Pesanan>& db_pesanan, vec
         getline(cin, id_hapus);
         if (first_run_hapus) {
             if (id_hapus.empty()) {
-                getline(cin, id_hapus);
+                getline(cin, id_hapus); // Ambil input lagi jika yang pertama tertangkap enter kosong
             }
             first_run_hapus = false;
         }
@@ -73,7 +76,7 @@ void hapusBarang(vector<Barang>& daftar_barang, vector<Pesanan>& db_pesanan, vec
         auto it = daftar_barang.begin();
         for (; it != daftar_barang.end(); ++it) {
             if (it->id_barang == id_hapus) {
-                break;
+                break; 
             }
         }
 
@@ -92,7 +95,8 @@ void hapusBarang(vector<Barang>& daftar_barang, vector<Pesanan>& db_pesanan, vec
 
         if (!konfirmasi.empty() && (konfirmasi[0] == 'y' || konfirmasi[0] == 'Y')) {
             cout << "\n[-] Barang " << it->nama_barang << " berhasil dihapus!\n";
-            daftar_barang.erase(it);
+            
+            daftar_barang.erase(it); 
             
             simpanData(daftar_barang, db_pesanan, db_rute, db_user);
             cout << "[+] Data Gudang JSON otomatis diperbarui!\n";
@@ -106,7 +110,7 @@ void hapusBarang(vector<Barang>& daftar_barang, vector<Pesanan>& db_pesanan, vec
             cout << "\nTekan Enter untuk kembali...";
             string dummy;
             getline(cin, dummy);
-            break;
+            break; 
         }
 
         cout << "\nIngin hapus barang lain? (y/n): ";

@@ -8,20 +8,23 @@
 
 using namespace std;
 
+// Fungsi editRute menggunakan reference (&) agar modifikasi langsung tersimpan ke data asli
 void editRute(vector<Rute>& daftar_rute, vector<Barang>& db_barang, vector<Pesanan>& db_pesanan, vector<Pengguna>& db_user) {
+    
     if (daftar_rute.empty()) {
         system("cls");
         cout << "\n=== EDIT DATA RUTE ===\n";
         cout << "Data rute masih kosong!\n";
         cout << "\nTekan Enter untuk kembali...";
         string dummy;
-        getline(cin >> ws, dummy);
+        getline(cin >> ws, dummy); 
         return;
     }
 
     char edit_lagi;
-    static bool first_run_edit_rute = true;
+    static bool first_run_edit_rute = true; //menangani sisa buffer enter dari input sebelumnya
 
+    // Loop utama agar bisa mengedit rute berkali-kali tanpa harus kembali ke menu utama
     do {
         system("cls");
         cout << "\n=== DAFTAR RUTE (REFERENSI EDIT) ===\n";
@@ -33,6 +36,7 @@ void editRute(vector<Rute>& daftar_rute, vector<Barang>& db_barang, vector<Pesan
              << setw(15) << "Standar (Rp)"
              << setw(15) << "Premium (Rp)\n";
         cout << "----------------------------------------------------------------------------------------\n";
+        
         for (const auto& r : daftar_rute) {
             cout << setw(10) << left << r.id_rute 
                  << setw(20) << r.tujuan 
@@ -47,12 +51,12 @@ void editRute(vector<Rute>& daftar_rute, vector<Barang>& db_barang, vector<Pesan
         cout << "\nMasukkan ID Rute yang ingin diedit (Ketik '0' untuk batal): "; 
         
         if (first_run_edit_rute) {
-            cin >> ws;
+            cin >> ws; // Buang spasi/enter kosong di awal
             first_run_edit_rute = false;
         }
         getline(cin, id_cari);
 
-        if (id_cari == "0") return;
+        if (id_cari == "0") return; 
 
         if (id_cari.empty()) {
             cout << "\n[-] Error: ID Rute tidak boleh kosong!\n";
@@ -68,7 +72,7 @@ void editRute(vector<Rute>& daftar_rute, vector<Barang>& db_barang, vector<Pesan
         for (; it != daftar_rute.end(); ++it) {
             if (it->id_rute == id_cari) {
                 ditemukan = true;
-                break;
+                break; 
             }
         }
 
@@ -90,7 +94,7 @@ void editRute(vector<Rute>& daftar_rute, vector<Barang>& db_barang, vector<Pesan
             "Layanan Premium (Harga & Estimasi)", 
             "Selesai Edit & Simpan"
         };
-        int posisi_edit = 0;
+        int posisi_edit = 0; 
 
         while (sedang_edit) {
             system("cls");
@@ -104,6 +108,7 @@ void editRute(vector<Rute>& daftar_rute, vector<Barang>& db_barang, vector<Pesan
             cout << "Premium     : Rp " << fixed << setprecision(0) << it->biaya_premium << " (" << it->estimasi_premium << ")\n";
             cout << "\nPilih bagian yang ingin diubah:\n\n";
 
+            // Render menu dan warna hijau pada opsi yang disorot
             for (int i = 0; i < menu_edit.size(); i++) {
                 if (i == posisi_edit) {
                     cout << "  > \033[1;32m" << menu_edit[i] << "\033[0m <\n";
@@ -112,14 +117,16 @@ void editRute(vector<Rute>& daftar_rute, vector<Barang>& db_barang, vector<Pesan
                 }
             }
 
-            char tombol = _getch();
+            char tombol = _getch(); // Tangkap input keyboard
 
+            //Logika Navigasi: 72 = Atas, 80 = Bawah, '\r' = Enter
             if (tombol == 72 && posisi_edit > 0) {
                 posisi_edit--;
             } else if (tombol == 80 && posisi_edit < menu_edit.size() - 1) {
                 posisi_edit++;
             } else if (tombol == '\r') {
                 system("cls");
+                
                 if (posisi_edit == 0) {
                     cout << "Ubah Kota Tujuan Baru : ";
                     string input_tujuan;
@@ -136,7 +143,7 @@ void editRute(vector<Rute>& daftar_rute, vector<Barang>& db_barang, vector<Pesan
                     getline(cin, input_jarak);
                     if (!input_jarak.empty()) {
                         try {
-                            it->jarak = stod(input_jarak);
+                            it->jarak = stod(input_jarak); // Konversi ke double. Validasi pakai try-catch agar aman kalau salah input
                             cout << "\n[+] Jarak berhasil diubah!\n";
                         } catch(...) {
                             cout << "\n[-] Error: Input harus berupa angka!\n";
@@ -145,6 +152,7 @@ void editRute(vector<Rute>& daftar_rute, vector<Barang>& db_barang, vector<Pesan
                     system("pause");
                 }
                 else if (posisi_edit == 2) {
+                    // Edit Harga Reguler
                     cout << "Ubah Harga Reguler Baru (Rp) : "; 
                     string in_h; getline(cin, in_h);
                     if (!in_h.empty()) {
@@ -208,6 +216,7 @@ void editRute(vector<Rute>& daftar_rute, vector<Barang>& db_barang, vector<Pesan
                     system("pause");
                 }
                 else if (posisi_edit == 5) {
+
                     if (it->biaya_reguler <= 0 && it->biaya_standar <= 0 && it->biaya_premium <= 0) {
                         cout << "\n[-] Peringatan: Anda mengosongkan semua harga pengiriman.\n";
                         cout << "Rute ini tidak akan bisa dipilih oleh pelanggan jika tidak ada layanan yang aktif.\n";

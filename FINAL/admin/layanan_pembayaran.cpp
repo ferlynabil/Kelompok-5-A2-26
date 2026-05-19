@@ -7,8 +7,8 @@
 
 using namespace std;
 
-
 void layananPembayaranDanPengiriman(vector<Pesanan>& daftar_pesanan, vector<Barang>& db_barang, vector<Rute>& db_rute, vector<Pengguna>& db_user) {
+    
     if (daftar_pesanan.empty()) {
         system("cls");
         cout << "\n=== LAYANAN PEMBAYARAN & PENGIRIMAN ===\n";
@@ -40,7 +40,7 @@ void layananPembayaranDanPengiriman(vector<Pesanan>& daftar_pesanan, vector<Bara
 
     string id_cari;
     cout << "\nMasukkan ID Pesanan untuk update status (Ketik '0' untuk batal): ";
-    cin >> ws;
+    cin >> ws; // Membersihkan buffer whitespace (spasi/enter) sebelum getline
     getline(cin, id_cari);
 
     if (id_cari == "0") return;
@@ -50,7 +50,7 @@ void layananPembayaranDanPengiriman(vector<Pesanan>& daftar_pesanan, vector<Bara
     for (; it != daftar_pesanan.end(); ++it) {
         if (it->id_pesanan == id_cari) {
             ditemukan = true;
-            break;
+            break; 
         }
     }
 
@@ -70,9 +70,10 @@ void layananPembayaranDanPengiriman(vector<Pesanan>& daftar_pesanan, vector<Bara
 
     if (konfirm == 'y' || konfirm == 'Y') {
 
+        // Menimpa status lama dengan status baru
         it->status = "Lunas & Dikirim";
         
-
+        // Menyimpan perubahan ke file JSON
         simpanData(db_barang, daftar_pesanan, db_rute, db_user);
 
         cout << "\n[+] Status pesanan berhasil diperbarui!\n";
@@ -81,5 +82,5 @@ void layananPembayaranDanPengiriman(vector<Pesanan>& daftar_pesanan, vector<Bara
         cout << "\n[~] Pembaruan dibatalkan.\n";
     }
 
-    system("pause");
+    system("pause"); // Menahan layar 
 }

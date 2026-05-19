@@ -2,9 +2,11 @@
 #include "../database_handler.h"
 #include <iostream>
 
+// dashboard utama yang muncul khusus buat pembeli
 void userMenu(std::vector<Barang>* items, std::vector<Rute>* routes, std::vector<Pesanan>* trxs, std::vector<Pengguna>* users) {
     bool running = true;
 
+    // daftar menu yang dibikin supaya dipilih pakai panah keyboard (inq)
     std::vector<std::string> menuOptions = {
         "Lihat Barang",
         "Pesan Barang",
@@ -15,6 +17,7 @@ void userMenu(std::vector<Barang>* items, std::vector<Rute>* routes, std::vector
     };
 
     while (running) {
+        // panggil fungsi pembuat menu interaktif
         int pilihan = inquirerMenuUser("SISTEM TOKO BANGUNAN", menuOptions);
 
         switch (pilihan) {
@@ -43,7 +46,7 @@ void userMenu(std::vector<Barang>* items, std::vector<Rute>* routes, std::vector
                 break;
             case 5:
                 clearScreenUser();
-                std::cout << "\n\033[1;32mTerima kasih telah berbelanja!\033[0m\n";
+                std::cout << "\n\033[1;32mTerima kasih telah menggunakan layanan kami!\033[0m\n";
                 running = false;
                 break;
         }

@@ -4,6 +4,7 @@
 #include <string>
 #include "../database_handler.h"
 
+// fungsi pembantu buat ngintip isi gudang supaya user bisa langsung milih
 static void tampilDaftarBarang(std::vector<Barang>* items) {
     std::cout << "\033[1;32m=== DAFTAR BARANG TERSEDIA ===\033[0m\n";
     std::cout << std::left
@@ -22,268 +23,128 @@ static void tampilDaftarBarang(std::vector<Barang>* items) {
     std::cout << "--------------------------------------------------------------\n";
 }
 
+// nampilin jalur ekspedisi yang bisa dipakai sama pelanggan
 static void tampilDaftarRute(std::vector<Rute>* routes) {
     std::cout << "\033[1;32m=== DAFTAR RUTE PENGIRIMAN (DARI SAMARINDA) ===\033[0m\n";
     std::cout << std::left
-              << std::setw(14) << "Kode Rute"
-              << std::setw(26) << "Tujuan Kota"
-              << "Jarak\n";
-    std::cout << "---------------------------------------------------\n";
+              << std::setw(12) << "ID Rute"
+              << std::setw(20) << "Kota Tujuan"
+              << std::setw(15) << "Reguler (Rp)"
+              << std::setw(15) << "Standar (Rp)"
+              << "Premium (Rp)\n";
+    std::cout << "--------------------------------------------------------------------------\n";
     for (const auto& r : *routes) {
         std::cout << std::left
-                  << std::setw(14) << r.id_rute
-                  << std::setw(26) << r.tujuan
-                  << r.jarak << " km\n";
+                  << std::setw(12) << r.id_rute
+                  << std::setw(20) << r.tujuan
+                  << std::setw(15) << (long long)r.biaya_reguler
+                  << std::setw(15) << (long long)r.biaya_standar
+                  << (long long)r.biaya_premium << "\n";
     }
-    std::cout << "---------------------------------------------------\n";
+    std::cout << "--------------------------------------------------------------------------\n";
 }
 
-void orderItem(std::vector<Barang>* items, std::vector<Rute>* routes,
-               std::vector<Pesanan>* trxs, std::vector<Pengguna>* users) {
-
+// tempat nyatukan logika dari awal milih sampai jadi orderan masuk
+void orderItem(std::vector<Barang>* items, std::vector<Rute>* routes, std::vector<Pesanan>* trxs, std::vector<Pengguna>* users) {
     if (items->empty()) {
-        std::cout << "\n\033[1;31mBelum ada barang untuk dipesan. Menunggu Admin.\033[0m\n";
+        std::cout << "\033[1;31mGudang kosong! Belum ada barang untuk dipesan.\033[0m\n";
         return;
     }
 
+    tampilDaftarBarang(items);
+    std::cout << "\nMasukkan Kode Barang yang ingin dipesan (atau 0 untuk batal): ";
+    std::string id_barang;
+    std::getline(std::cin, id_barang);
+
+    if (id_barang == "0") return;
+
+    // pastiin dulu barangnya memang terdaftar di dalam gudang
     Barang* selectedItem = nullptr;
-
-    while (selectedItem == nullptr) {
-        std::cout << "\033[2J\033[1;1H";
-        std::cout << "\033[1;35m========================================\033[0m\n";
-        std::cout << "\033[1;37m             PESAN BARANG               \033[0m\n";
-        std::cout << "\033[1;35m========================================\033[0m\n\n";
-
-        tampilDaftarBarang(items);
-
-        std::cout << "\nMasukkan Kode Barang yang ingin dibeli\n";
-        std::cout << "(Ketik \033[1;33m'0'\033[0m untuk kembali ke menu): ";
-
-        std::string kode;
-        std::getline(std::cin, kode);
-
-        while (!kode.empty() && kode.front() == ' ') kode.erase(kode.begin());
-        while (!kode.empty() && kode.back()  == ' ') kode.pop_back();
-
-        if (kode.empty() || kode == "0") {
-            return;
+    for (auto& it : *items) {
+        if (it.id_barang == id_barang) {
+            selectedItem = &it;
+            break;
         }
+    }
 
-        for (auto& it : *items) {
-            if (it.id_barang == kode) {
-                selectedItem = &it;
+    if (!selectedItem) {
+        std::cout << "\033[1;31mBarang tidak ditemukan.\033[0m\n";
+        return;
+    }
+
+    std::cout << "Masukkan jumlah yang ingin dibeli: ";
+    long long qty = getValidNumberUser();
+
+    if (qty <= 0 || qty > selectedItem->stok) {
+        std::cout << "\033[1;31mJumlah tidak valid atau melebihi stok yang ada (" << selectedItem->stok << ").\033[0m\n";
+        return;
+    }
+
+    long long totalHargaBarang = (long long)selectedItem->harga * qty;
+    std::cout << "Total harga barang: Rp" << totalHargaBarang << "\n";
+
+    std::vector<std::string> opsiBeli = {"Ambil Sendiri di Toko", "Kirim via Ekspedisi", "Batal"};
+    int pilihan = inquirerMenuUser("PILIH METODE PEMBELIAN", opsiBeli);
+
+    std::string tipeBeli;
+    long long grandTotal = totalHargaBarang;
+    
+    if (pilihan == 2) {
+        std::cout << "\n\033[1;33m[!] Pesanan dibatalkan. Kembali ke menu.\033[0m\n";
+        return;
+    } else if (pilihan == 0) {
+        tipeBeli = "Ambil di Toko";
+    } else if (pilihan == 1) {
+        tipeBeli = "Kirim Ekspedisi";
+        clearScreenUser();
+        
+        if (routes->empty()) {
+             std::cout << "\033[1;31mMaaf, belum ada rute pengiriman yang tersedia.\033[0m\n";
+             return;
+        }
+        
+        tampilDaftarRute(routes);
+        std::cout << "\nMasukkan ID Rute: ";
+        std::string id_rute;
+        std::getline(std::cin, id_rute);
+        
+        Rute* selectedRute = nullptr;
+        for (auto& r : *routes) {
+            if (r.id_rute == id_rute) {
+                selectedRute = &r;
                 break;
             }
         }
-
-        if (selectedItem == nullptr) {
-            std::cout << "\n\033[1;31m[!] Kode barang \"" << kode << "\" tidak ditemukan. Silakan coba lagi.\033[0m\n";
-            std::cout << "\033[1;33mTekan Enter untuk mencoba lagi...\033[0m";
-            while (_getch() != '\r');
-        }
-    }
-
-    long long qty = 0;
-    bool qtyOk = false;
-
-    while (!qtyOk) {
-        std::cout << "\033[2J\033[1;1H";
-        std::cout << "\033[1;35m========================================\033[0m\n";
-        std::cout << "\033[1;37m        LANGKAH 2: JUMLAH BELI          \033[0m\n";
-        std::cout << "\033[1;35m========================================\033[0m\n\n";
-
-        std::cout << "  Barang dipilih : \033[1;36m" << selectedItem->nama_barang << "\033[0m\n";
-        std::cout << "  Harga          : \033[1;33mRp" << (long long)selectedItem->harga << "\033[0m\n";
-        std::cout << "  Stok tersedia  : \033[1;32m" << selectedItem->stok << " pcs\033[0m\n\n";
-
-        std::cout << "Masukkan jumlah beli\n";
-        std::cout << "(Ketik \033[1;33m'0'\033[0m untuk kembali ke pilih barang): ";
-
-        std::string inputQty;
-        std::getline(std::cin, inputQty);
-
-        while (!inputQty.empty() && inputQty.front() == ' ') inputQty.erase(inputQty.begin());
-        while (!inputQty.empty() && inputQty.back()  == ' ') inputQty.pop_back();
-
-        if (inputQty.empty() || inputQty == "0") {
-            selectedItem = nullptr;
-            break;
-        }
-
-        bool semuaAngka = true;
-        for (char c : inputQty) {
-            if (!std::isdigit(c)) { semuaAngka = false; break; }
-        }
-        if (!semuaAngka || inputQty.empty()) {
-            std::cout << "\n\033[1;31m[!] Masukkan angka bulat yang valid.\033[0m\n";
-            std::cout << "\033[1;33mTekan Enter untuk mencoba lagi...\033[0m";
-            while (_getch() != '\r');
-            continue;
-        }
-
-        qty = std::stoll(inputQty);
-
-        if (qty <= 0) {
-            std::cout << "\n\033[1;31m[!] Jumlah harus lebih dari 0.\033[0m\n";
-            std::cout << "\033[1;33mTekan Enter untuk mencoba lagi...\033[0m";
-            while (_getch() != '\r');
-            continue;
-        }
-        if (qty > selectedItem->stok) {
-            std::cout << "\n\033[1;31m[!] Stok tidak mencukupi. Stok saat ini: "
-                      << selectedItem->stok << " pcs.\033[0m\n";
-            std::cout << "\033[1;33mTekan Enter untuk mencoba lagi...\033[0m";
-            while (_getch() != '\r');
-            continue;
-        }
-
-        qtyOk = true;
-    }
-
-    if (selectedItem == nullptr) {
-        orderItem(items, routes, trxs, users);
-        return;
-    }
-
-    long long subtotal = (long long)selectedItem->harga * qty;
-    long long ongkir   = 0;
-    std::string tipeBeli = "Ditempat";
-
-    std::vector<std::string> tipeOptions = {
-        "Beli Ditempat",
-        "Diantar (Kirim ke Alamat)",
-        "Kembali"
-    };
-    int tipePilihan = inquirerMenuUser("LANGKAH 3: TIPE PEMBELIAN", tipeOptions);
-
-    if (tipePilihan == 2) {
-        orderItem(items, routes, trxs, users);
-        return;
-    }
-
-    Rute* selectedRoute = nullptr;
-
-    if (tipePilihan == 1) {
-        if (routes->empty()) {
-            std::cout << "\033[2J\033[1;1H";
-            std::cout << "\n\033[1;31m[!] Belum ada rute pengiriman dari Admin.\033[0m\n";
-            std::cout << "\033[1;31m    Transaksi pengiriman tidak dapat dilanjutkan.\033[0m\n";
-            std::cout << "\n\033[1;36mTekan Enter untuk kembali...\033[0m";
-            while (_getch() != '\r');
-            orderItem(items, routes, trxs, users);
+        
+        if (!selectedRute) {
+            std::cout << "\033[1;31mRute tidak valid.\033[0m\n";
             return;
         }
-
-        while (selectedRoute == nullptr) {
-            std::cout << "\033[2J\033[1;1H";
-            std::cout << "\033[1;35m========================================\033[0m\n";
-            std::cout << "\033[1;37m      LANGKAH 4: PILIH RUTE             \033[0m\n";
-            std::cout << "\033[1;35m========================================\033[0m\n\n";
-
-            tampilDaftarRute(routes);
-
-            std::cout << "\nMasukkan Kode Rute Pengiriman\n";
-            std::cout << "(Ketik \033[1;33m'0'\033[0m untuk kembali ke tipe pembelian): ";
-
-            std::string ruteKode;
-            std::getline(std::cin, ruteKode);
-
-            while (!ruteKode.empty() && ruteKode.front() == ' ') ruteKode.erase(ruteKode.begin());
-            while (!ruteKode.empty() && ruteKode.back()  == ' ') ruteKode.pop_back();
-
-            if (ruteKode.empty() || ruteKode == "0") {
-                orderItem(items, routes, trxs, users);
-                return;
-            }
-
-            for (auto& r : *routes) {
-                if (r.id_rute == ruteKode) {
-                    selectedRoute = &r;
-                    break;
-                }
-            }
-
-            if (selectedRoute == nullptr) {
-                std::cout << "\n\033[1;31m[!] Kode rute \"" << ruteKode << "\" tidak valid. Silakan coba lagi.\033[0m\n";
-                std::cout << "\033[1;33mTekan Enter untuk mencoba lagi...\033[0m";
-                while (_getch() != '\r');
-            }
-        }
-
-        std::vector<std::string> serviceOptions;
-        std::vector<long long>   serviceCosts;
-        std::vector<std::string> serviceNames;
-
-        if (selectedRoute->biaya_reguler > 0) {
-            serviceOptions.push_back("Reguler  (Rp" + std::to_string((long long)selectedRoute->biaya_reguler)
-                                     + ") - " + selectedRoute->estimasi_reguler);
-            serviceCosts.push_back((long long)selectedRoute->biaya_reguler);
-            serviceNames.push_back("Reguler");
-        }
-        if (selectedRoute->biaya_standar > 0) {
-            serviceOptions.push_back("Standar  (Rp" + std::to_string((long long)selectedRoute->biaya_standar)
-                                     + ") - " + selectedRoute->estimasi_standar);
-            serviceCosts.push_back((long long)selectedRoute->biaya_standar);
-            serviceNames.push_back("Standar");
-        }
-        if (selectedRoute->biaya_premium > 0) {
-            serviceOptions.push_back("Premium  (Rp" + std::to_string((long long)selectedRoute->biaya_premium)
-                                     + ") - " + selectedRoute->estimasi_premium);
-            serviceCosts.push_back((long long)selectedRoute->biaya_premium);
-            serviceNames.push_back("Premium");
-        }
-
-        if (serviceOptions.empty()) {
-            std::cout << "\n\033[1;31m[!] Rute ini belum memiliki harga layanan yang diatur Admin.\033[0m\n";
-            std::cout << "\033[1;33mTekan Enter untuk kembali...\033[0m";
-            while (_getch() != '\r');
-            orderItem(items, routes, trxs, users);
-            return;
-        }
-
-        serviceOptions.push_back("Kembali");
-
-        int servicePick = inquirerMenuUser(
-            "LANGKAH 5: PILIH LAYANAN (" + selectedRoute->kota_asal + " -> " + selectedRoute->tujuan + ")",
-            serviceOptions
-        );
-
-        if (servicePick == (int)serviceOptions.size() - 1) {
-            orderItem(items, routes, trxs, users);
-            return;
-        }
-
-        ongkir   = serviceCosts[servicePick];
-        tipeBeli = "Diantar (" + serviceNames[servicePick] + ")";
+        
+        std::vector<std::string> opsiOngkir = {"Reguler (Rp" + std::to_string((long long)selectedRute->biaya_reguler) + ")", 
+                                               "Standar (Rp" + std::to_string((long long)selectedRute->biaya_standar) + ")", 
+                                               "Premium (Rp" + std::to_string((long long)selectedRute->biaya_premium) + ")"};
+        int pilOngkir = inquirerMenuUser("PILIH LAYANAN PENGIRIMAN", opsiOngkir);
+        
+        long long biayaOngkir = 0;
+        if (pilOngkir == 0) biayaOngkir = selectedRute->biaya_reguler;
+        else if (pilOngkir == 1) biayaOngkir = selectedRute->biaya_standar;
+        else if (pilOngkir == 2) biayaOngkir = selectedRute->biaya_premium;
+        
+        grandTotal += biayaOngkir;
+        std::cout << "\n\033[1;32mOngkos kirim ditambahkan. Total Bayar Baru: Rp" << grandTotal << "\033[0m\n";
     }
 
-    long long grandTotal = subtotal + ongkir;
-
-    std::cout << "\033[2J\033[1;1H";
-    std::cout << "\033[1;35m========================================\033[0m\n";
-    std::cout << "\033[1;37m    LANGKAH 6: KONFIRMASI PESANAN       \033[0m\n";
-    std::cout << "\033[1;35m========================================\033[0m\n\n";
-
-    std::cout << "  Barang        : \033[1;36m" << selectedItem->nama_barang << "\033[0m\n";
-    std::cout << "  Jumlah        : " << qty << " pcs\n";
-    std::cout << "  Harga satuan  : Rp" << (long long)selectedItem->harga << "\n";
-    std::cout << "  Subtotal      : Rp" << subtotal << "\n";
-    std::cout << "  Tipe Beli     : " << tipeBeli << "\n";
-    if (ongkir > 0) {
-        std::cout << "  Ongkos Kirim  : \033[1;33mRp" << ongkir << "\033[0m\n";
-    }
-    std::cout << "\033[1;33m  ─────────────────────────────────\033[0m\n";
-    std::cout << "\033[1;32m  TOTAL BAYAR  : Rp" << grandTotal << "\033[0m\n\n";
-
-    std::vector<std::string> konfirmasiOptions = {"Ya, Konfirmasi Pesanan", "Batal / Kembali"};
-    int konfirmasi = inquirerMenuUser("Apakah Anda yakin ingin memesan?", konfirmasiOptions);
-
-    if (konfirmasi == 1) {
-        std::cout << "\033[2J\033[1;1H";
+    std::cout << "\nApakah Anda yakin ingin memesan ini? (y/n): ";
+    std::string konfirm;
+    std::getline(std::cin, konfirm);
+    
+    if (konfirm != "y" && konfirm != "Y") {
         std::cout << "\n\033[1;33m[!] Pesanan dibatalkan. Kembali ke menu.\033[0m\n";
         return;
     }
 
+    // stok di gudang berkurang seketika pas pesanan fix dibuat
     selectedItem->stok -= qty;
 
     std::string newTrxId = "TRX00" + std::to_string(trxs->size() + 1);
@@ -297,6 +158,7 @@ void orderItem(std::vector<Barang>* items, std::vector<Rute>* routes,
     };
     trxs->push_back(newTrx);
 
+    // auto backup datanya pakai JSON biar gak raib pas dilogout
     simpanData(*items, *trxs, *routes, *users);
 
     std::cout << "\033[2J\033[1;1H";
@@ -304,12 +166,8 @@ void orderItem(std::vector<Barang>* items, std::vector<Rute>* routes,
     std::cout << "\033[1;32m         PESANAN BERHASIL DIBUAT!       \033[0m\n";
     std::cout << "\033[1;35m========================================\033[0m\n\n";
     std::cout << "  ID Pesanan    : \033[1;36m" << newTrxId << "\033[0m\n";
-    std::cout << "  Barang        : " << newTrx.nama_barang << "\n";
-    std::cout << "  Jumlah        : " << newTrx.jumlah << " pcs\n";
-    std::cout << "  Tipe Beli     : " << newTrx.tipe_beli << "\n";
-    std::cout << "  Total Bayar   : \033[1;33mRp" << (long long)newTrx.total_bayar << "\033[0m\n";
-    std::cout << "  Status        : \033[1;33m" << newTrx.status << "\033[0m\n\n";
-    std::cout << "\033[1;36m  Silakan tunggu konfirmasi Admin, lalu\033[0m\n";
-    std::cout << "\033[1;36m  lakukan pembayaran di menu Bayar Pesanan.\033[0m\n\n";
-    std::cout << "\033[1;32m[+] Data disimpan ke JSON secara otomatis.\033[0m\n";
+    std::cout << "  Barang        : " << selectedItem->nama_barang << " (" << qty << " pcs)\n";
+    std::cout << "  Metode        : " << tipeBeli << "\n";
+    std::cout << "  Total Tagihan : \033[1;33mRp" << grandTotal << "\033[0m\n";
+    std::cout << "\n[+] Data pesanan berhasil disimpan ke sistem.\n";
 }

@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <conio.h>
 
-// Fungsi pembantu untuk mengubah string ke lowercase (untuk pencarian anti-sensitif)
+// ubah ke huruf kecil semua biar pencarian barang jadi lebih santai gak kaku
 std::string toLower(std::string s) {
     for(char &c : s) c = tolower(c);
     return s;
@@ -27,7 +27,9 @@ void displayItems(std::vector<Barang>* items) {
 
     int posisi = 0;
     bool milih = true;
-    std::vector<Barang> dataTampil = *items; // Copy data asli agar tidak merusak database utama
+    
+    // sengaja copy datanya di sini biar database aslinya gak rusak urutannya
+    std::vector<Barang> dataTampil = *items; 
 
     while (milih) {
         system("cls");
@@ -36,34 +38,41 @@ void displayItems(std::vector<Barang>* items) {
             if (i == posisi) std::cout << "  > \033[1;32m" << menuSort[i] << "\033[0m <\n";
             else std::cout << "    " << menuSort[i] << "\n";
         }
-
-        char tombol = _getch();
-        if (tombol == 72 && posisi > 0) posisi--;
-        else if (tombol == 80 && posisi < menuSort.size() - 1) posisi++;
-        else if (tombol == '\r') {
-            if (posisi == 5) return; // Kembali ke menu utama
+        
+        int tombol = _getch();
+        if (tombol == 224) {
+            tombol = _getch();
+            if (tombol == 72 && posisi > 0) posisi--;
+            else if (tombol == 80 && posisi < menuSort.size() - 1) posisi++;
+        } else if (tombol == '\r') {
+            if (posisi == 5) return;
             
-            if (posisi == 4) { // FITUR CARI
-                system("cls");
-                std::cout << "\nMasukkan Nama Barang yang dicari: ";
-                std::string keyword;
-                std::cin >> keyword;
-                std::vector<Barang> hasilCari;
-                for (const auto& b : *items) {
-                    if (toLower(b.nama_barang).find(toLower(keyword)) != std::string::npos) {
-                        hasilCari.push_back(b);
-                    }
-                }
-                dataTampil = hasilCari;
-            } else if (posisi == 1) { // SORT NAMA
+            if (posisi == 4) {
+                 std::cout << "\nMasukkan kata kunci pencarian: ";
+                 std::string keyword;
+                 std::getline(std::cin, keyword);
+                 keyword = toLower(keyword);
+                 
+                 std::vector<Barang> hasilCari;
+                 for (const auto& brg : *items) {
+                     if (toLower(brg.nama_barang).find(keyword) != std::string::npos) {
+                         hasilCari.push_back(brg);
+                     }
+                 }
+                 dataTampil = hasilCari;
+                 milih = false;
+                 continue;
+            }
+            
+            if (posisi == 1) { 
                 std::sort(dataTampil.begin(), dataTampil.end(), [](const Barang& a, const Barang& b) {
                     return a.nama_barang < b.nama_barang;
                 });
-            } else if (posisi == 2) { // SORT TERMURAH
+            } else if (posisi == 2) { 
                 std::sort(dataTampil.begin(), dataTampil.end(), [](const Barang& a, const Barang& b) {
                     return a.harga < b.harga;
                 });
-            } else if (posisi == 3) { // SORT TERMAHAL
+            } else if (posisi == 3) { 
                 std::sort(dataTampil.begin(), dataTampil.end(), [](const Barang& a, const Barang& b) {
                     return a.harga > b.harga;
                 });
@@ -72,7 +81,7 @@ void displayItems(std::vector<Barang>* items) {
         }
     }
 
-    // TAMPILKAN TABEL HASIL
+    // langsung cetak hasil susunan datanya ke layar pembeli
     system("cls");
     if (dataTampil.empty()) {
         std::cout << "\n\033[1;31mBarang tidak ditemukan.\033[0m\n";
@@ -82,13 +91,15 @@ void displayItems(std::vector<Barang>* items) {
         std::cout << "--------------------------------------------------------------\n";
 
         for (const auto& it : dataTampil) {
-            std::cout << std::left << std::setw(15) << it.id_barang 
-                      << std::setw(25) << it.nama_barang 
-                      << std::setw(15) << (long long)it.harga 
-                      << it.stok << "\n";
+             std::cout << std::left 
+                       << std::setw(15) << it.id_barang 
+                       << std::setw(25) << it.nama_barang 
+                       << std::setw(15) << (long long)it.harga 
+                       << it.stok << "\n";
         }
+        std::cout << "--------------------------------------------------------------\n";
     }
-
-    std::cout << "\n\033[1;32m> Kembali <\033[0m (Tekan Enter)";
-    while (_getch() != '\r'); // Menunggu Enter murni
+    std::cout << "\n\033[1;36mTekan Enter untuk kembali...\033[0m";
+    std::string dumm;
+    std::getline(std::cin, dumm);
 }

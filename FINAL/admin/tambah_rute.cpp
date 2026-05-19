@@ -32,7 +32,7 @@ void tambahRute(vector<Rute>& daftar_rute, vector<Barang>& db_barang,
                 cout << "  \033[1;31m[-] Error: Nama kota hanya boleh berisi huruf dan spasi!\033[0m\n";
                 continue;
             }
-            return in; // valid, kembalikan nama kota tujuan
+            return in; 
         }
     };
 
@@ -79,7 +79,7 @@ void tambahRute(vector<Rute>& daftar_rute, vector<Barang>& db_barang,
                 cout << "  \033[1;31m[-] Error: Harga hanya boleh berisi angka!\033[0m\n";
                 continue;
             }
-            return stod(in); // valid, kembalikan harga sebagai double
+            return stod(in); 
         }
     };
 
@@ -118,7 +118,7 @@ void tambahRute(vector<Rute>& daftar_rute, vector<Barang>& db_barang,
         cout << "ID Rute       : " << id_otomatis << " (Otomatis)\n";
 
         string input_tujuan = inputTujuanValid();
-        if (input_tujuan == "0") return; // batal, keluar fungsi lalu kembali ke menuAdmin
+        if (input_tujuan == "0") return; 
 
         double jarak_km = inputJarakValid();
 
@@ -148,7 +148,6 @@ void tambahRute(vector<Rute>& daftar_rute, vector<Barang>& db_barang,
             break; 
         }
 
-        // Isi data rute baru dan simpan ke list + file JSON
         Rute rute_baru;
         rute_baru.id_rute = id_otomatis;
         rute_baru.kota_asal = "Samarinda";

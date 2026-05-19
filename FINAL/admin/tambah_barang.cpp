@@ -22,7 +22,6 @@ void tambahBarang(vector<Barang>& daftar_barang, vector<Pesanan>& db_pesanan,
 
         cout << "Nama Barang : ";
 
-        // Bersihkan sisa newline di buffer hanya saat pertama masuk fungsi
         if (first_run) {
             string dummy;
             if (cin.peek() == '\n') getline(cin, dummy);
@@ -69,12 +68,12 @@ void tambahBarang(vector<Barang>& daftar_barang, vector<Pesanan>& db_pesanan,
             else if (tombol_kat == '\r') memilih_kat = false; 
         }
 
-        // Buat ID otomatis berdasarkan prefix kategori + urutan
+        // Ngebuat ID otomatis  
         string prefix_pilihan = prefix_kategori[posisi_kategori];
         int urutan = 1;
         for (const auto& b : daftar_barang) {
             if (b.id_barang.length() >= 3 && b.id_barang.substr(0, 3) == prefix_pilihan)
-                urutan++; // hitung sudah berapa barang dengan prefix yang sama
+                urutan++; // ngehitung sudah berapa barang dengan prefix yang sama
         }
         string str_urutan = to_string(urutan);
         while (str_urutan.length() < 3) str_urutan = "0" + str_urutan; // padding jadi 3 digit

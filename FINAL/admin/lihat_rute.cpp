@@ -23,7 +23,6 @@ void lihatRute(const vector<Rute>& daftar_rute) {
         return; 
     }
 
-    // Pilihan urutan tampilan yang bisa user pilih
     vector<string> menu_sort = {
         "Tanpa Pengurutan (Sesuai Input)",
         "Kota Tujuan (A - Z)",
@@ -54,7 +53,7 @@ void lihatRute(const vector<Rute>& daftar_rute) {
         else if (tombol == '\r') memilih_sort = false;            // enter = pilih
     }
 
-    // Jika user pilih "Kembali", langsung keluar dari fungsi
+    // Jika user pilih Kembali, langsung keluar dari fungsi
     if (posisi_sort == 4) return;
 
     if (posisi_sort == 1) {
@@ -123,10 +122,10 @@ void lihatRute(const vector<Rute>& daftar_rute) {
     cout << "----------------------------------------------------------------------------------------\n";
     cout << "*Catatan: Jika harga Rp 0, berarti layanan tersebut tidak tersedia untuk rute ini.\n";
 
-    // Tunggu user tekan Enter sebelum kembali ke menu
+    // nunggu user tekan Enter sebelum kembali ke menu
     cout << "\n  > \033[1;32mKembali\033[0m <\n";
     while (true) {
         char tombol = _getch();
-        if (tombol == '\r') break; // keluar loop, lanjut ke return
+        if (tombol == '\r') break; // keluar loop baru lanjut ke return
     }
 }

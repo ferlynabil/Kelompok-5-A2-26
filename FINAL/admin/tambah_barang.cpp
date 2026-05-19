@@ -41,10 +41,10 @@ void tambahBarang(vector<Barang>& daftar_barang, vector<Pesanan>& db_pesanan,
             cout << "\nIngin coba lagi? (y/n): ";
             string ans; getline(cin, ans);
             tambah_lagi = ans.empty() ? 'n' : ans[0];
-            continue; // ulang dari awal loop
+            continue; 
         }
 
-        // Pilih kategori berat pakai navigasi keyboard
+
         vector<string> list_kategori = {"Ringan (RGN)", "Sedang (SDG)", "Berat (BRT)"};
         vector<string> prefix_kategori = {"RGN", "SDG", "BRT"};
         int posisi_kategori = 0;
@@ -69,7 +69,7 @@ void tambahBarang(vector<Barang>& daftar_barang, vector<Pesanan>& db_pesanan,
             else if (tombol_kat == '\r') memilih_kat = false; 
         }
 
-        // Buat ID otomatis berdasarkan prefix kategori + urutan (misal: RGN-001)
+        // Buat ID otomatis berdasarkan prefix kategori + urutan
         string prefix_pilihan = prefix_kategori[posisi_kategori];
         int urutan = 1;
         for (const auto& b : daftar_barang) {
@@ -113,7 +113,7 @@ void tambahBarang(vector<Barang>& daftar_barang, vector<Pesanan>& db_pesanan,
         }
         barang_baru.harga = stod(input_harga); 
 
-        // Pilih satuan barang pakai navigasi keyboard
+     
         vector<string> list_satuan = {"Kilogram (kg)", "Gram (g)", "Liter (L)", "Buah/Pcs", "Sak", "Meter (m)"};
         int posisi_satuan = 0;
         bool memilih = true;
@@ -203,7 +203,6 @@ void tambahBarang(vector<Barang>& daftar_barang, vector<Pesanan>& db_pesanan,
         }
         barang_baru.stok = stoi(input_stok); 
 
-        // Semua data valid, simpan ke daftar dan update file JSON
         daftar_barang.push_back(barang_baru);
         simpanData(daftar_barang, db_pesanan, db_rute, db_user);
 

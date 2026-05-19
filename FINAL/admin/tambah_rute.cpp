@@ -121,7 +121,7 @@ void tambahRute(vector<Rute>& daftar_rute, vector<Barang>& db_barang,
         cout << "ID Rute       : " << id_otomatis << " (Otomatis)\n";
 
         string input_tujuan = inputTujuanValid();
-        if (input_tujuan == "0") return; // batal, keluar fungsi -> kembali ke menuAdmin
+        if (input_tujuan == "0") return; // batal, keluar fungsi lalu kembali ke menuAdmin
 
         double jarak_km = inputJarakValid();
 

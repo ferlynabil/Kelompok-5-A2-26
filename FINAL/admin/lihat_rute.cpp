@@ -37,7 +37,6 @@ void lihatRute(const vector<Rute>& daftar_rute) {
     bool memilih_sort = true;
     vector<Rute> data_tampil = daftar_rute; // salinan data agar aslinya tidak berubah
 
-    // Loop menu pilihan urutan pakai keyboard panah atas/bawah
     while (memilih_sort) {
         system("cls");
         cout << "\n=== OPSI TAMPILAN DAFTAR RUTE ===\n";
@@ -74,7 +73,7 @@ void lihatRute(const vector<Rute>& daftar_rute) {
                 if (banding_nama > kunci_nama) {
                     data_tampil[j + 1] = data_tampil[j];
                     j--;
-                } else break; // sudah di urutan yang benar, keluar loop
+                } else break; 
             }
             data_tampil[j + 1] = kunci;
         }
@@ -102,7 +101,6 @@ void lihatRute(const vector<Rute>& daftar_rute) {
         }
     }
 
-    // Tampilkan tabel rute dalam format kolom rapi
     system("cls");
     cout << "\n=== DAFTAR RUTE PENGIRIMAN (DARI SAMARINDA) ===\n";
     cout << "Metode: " << menu_sort[posisi_sort] << "\n";

@@ -18,14 +18,14 @@ static void clearScreenLogin() {
 }
 
 
-// Tampilkan header/judul aplikasi
+
 void tampilHeader() {
     cout << "\n====================================================" << endl;
     cout << "     MOLOTOV - TOKO MATERIAL BANGUNAN ONLINE" << endl;
     cout << "====================================================" << endl;
 }
 
-// Tampilkan garis pemisah antar bagian
+
 void tampilGaris() {
     cout << "----------------------------------------------------" << endl;
 }
@@ -44,12 +44,12 @@ void validasiNamaLengkap(const string &nama, const string &field) {
 
         if (isalpha(c)) {
 
-            adaHuruf = true;  // catat ada huruf
+            adaHuruf = true; 
 
         } 
         else if (c == ' ') {
 
-            continue;      // spasi dibolehkan, lanjut
+            continue;     
 
         } 
         else if (isdigit(c)) {
@@ -103,7 +103,7 @@ Pengguna* cariPenggunaLogin(vector<Pengguna>& database_user,
     return nullptr;  // tidak ditemukan
 }
 
-// Proses registrasi: input data user baru, validasi, lalu simpan ke database
+// Menu Register untuk buat akun baru, dengan validasi input dan simpan ke database
 void menuRegister(vector<Pengguna>& database_user,
                   vector<Barang>& db_barang,
                   vector<Pesanan>& db_pesanan,
@@ -223,7 +223,7 @@ void menuRegister(vector<Pengguna>& database_user,
             cout << "  Registrasi berhasil! Silahkan login." << endl;
             cout << "  [+] Data Pengguna di JSON otomatis diperbarui!" << endl;
 
-            for(int i = 0; i < 100000000; i++);  // jeda singkat sebelum kembali ke menu utama
+            for(int i = 0; i < 100000000; i++);  // delay singkat sebelum kembali ke menu utama
 
             selesai = true;
 
@@ -269,7 +269,7 @@ void menuRegister(vector<Pengguna>& database_user,
 }
 
 
-// Proses login: maksimal 3 percobaan, return true jika berhasil
+// Menu login user dengan validasi input dan cek ke database
 bool menuLogin(vector<Pengguna>& database_user,
                string& user_aktif,
                string& role_aktif) {
@@ -333,7 +333,7 @@ bool menuLogin(vector<Pengguna>& database_user,
 
                 tampilGaris();
 
-                for(int i = 0; i < 100000000; i++);  // jeda singkat sebelum masuk ke menu utama
+                for(int i = 0; i < 100000000; i++);  // delay singkat sebelum masuk ke menu utama
 
                 return true;
 

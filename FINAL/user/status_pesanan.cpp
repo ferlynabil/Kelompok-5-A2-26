@@ -14,7 +14,6 @@ static std::string warnaStatus(const std::string& status) {
     return "\033[0m";
 }
 
-// Keterangan per status
 static std::string keteranganStatus(const std::string& status) {
     if (status == "Menunggu Konfirmasi")
         return "  -> Pesanan Anda sedang menunggu disetujui Admin.";
@@ -101,7 +100,6 @@ void cekStatusPesanan(std::vector<Pesanan>* trxs) {
             continue;
         }
 
-        // Detail pesanan
         std::cout << "\033[2J\033[1;1H";
         std::cout << "\033[1;35m========================================\033[0m\n";
         std::cout << "\033[1;37m        DETAIL PESANAN                  \033[0m\n";
@@ -121,9 +119,8 @@ void cekStatusPesanan(std::vector<Pesanan>* trxs) {
             std::cout << "\n\033[1;37m" << ket << "\033[0m\n";
         }
 
-        // Reminder bayar jika sudah siap
         if (ditemukan->status == "Menunggu Pembayaran") {
-            std::cout << "\n\033[1;32m  [→] Pergi ke menu \033[1;33m\"Bayar Pesanan\"\033[1;32m"
+            std::cout << "\n\033[1;32m  [->] Pergi ke menu \033[1;33m\"Bayar Pesanan\"\033[1;32m"
                       << " untuk melunasi transaksi ini.\033[0m\n";
         }
 

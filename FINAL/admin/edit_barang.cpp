@@ -9,7 +9,6 @@
 
 using namespace std;
 
-// 1. TAMBAH 3 PARAMETER VECTOR LAINNYA DI SINI
 void editBarang(vector<Barang>& daftar_barang, vector<Pesanan>& db_pesanan, vector<Rute>& db_rute, vector<Pengguna>& db_user) {
     if (daftar_barang.empty()) {
         system("cls");
@@ -261,7 +260,6 @@ void editBarang(vector<Barang>& daftar_barang, vector<Pesanan>& db_pesanan, vect
                     getline(cin, input_stok);
                 }
                 else if (posisi_edit == 5) {
-                    // 2. SAAT KLIK "SELESAI EDIT", LANGSUNG SAVE KE JSON
                     simpanData(daftar_barang, db_pesanan, db_rute, db_user);
                     sedang_edit = false;
                 }

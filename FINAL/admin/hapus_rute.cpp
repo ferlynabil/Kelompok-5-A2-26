@@ -7,7 +7,7 @@
 
 using namespace std;
 
-// 1. UPDATE PARAMETER: Tambahkan db_barang, db_pesanan, db_user
+
 void hapusRute(vector<Rute>& daftar_rute, vector<Barang>& db_barang, vector<Pesanan>& db_pesanan, vector<Pengguna>& db_user) {
     if (daftar_rute.empty()) {
         system("cls");
@@ -66,10 +66,9 @@ void hapusRute(vector<Rute>& daftar_rute, vector<Barang>& db_barang, vector<Pesa
     cin >> konfirm;
 
     if (konfirm == 'y' || konfirm == 'Y') {
-        // Proses hapus dari vector
         daftar_rute.erase(it);
         
-        // 2. AUTO UPDATE JSON DETIK INI JUGA
+
         simpanData(db_barang, db_pesanan, daftar_rute, db_user);
         
         cout << "\n[+] Rute berhasil dihapus!\n";

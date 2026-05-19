@@ -7,7 +7,6 @@
 
 using namespace std;
 
-// Parameter sudah 4 macam: barang, pesanan, rute, user
 void menuAdmin(vector<Barang>& database_barang, vector<Pesanan>& database_pesanan, vector<Rute>& database_rute, vector<Pengguna>& database_user) {
     bool di_menu_admin = true;
     int pilihan = 0;
@@ -72,11 +71,9 @@ void menuAdmin(vector<Barang>& database_barang, vector<Pesanan>& database_pesana
                     hapusRute(database_rute, database_barang, database_pesanan, database_user); 
                     break;
                 case 8: 
-                    // SUDAH DIUPDATE: Kirim 4 database (Pesanan, Barang, Rute, User)
                     konfirmasiPesanan(database_pesanan, database_barang, database_rute, database_user); 
                     break;
                 case 9: 
-                    // SUDAH DIUPDATE: Kirim 4 database (Pesanan, Barang, Rute, User)
                     layananPembayaranDanPengiriman(database_pesanan, database_barang, database_rute, database_user); 
                     break;
                 case 10: 

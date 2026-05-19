@@ -5,7 +5,7 @@
 using json = nlohmann::json;
 
 void muatData(std::vector<Barang>& db_barang, std::vector<Pesanan>& db_pesanan, std::vector<Rute>& db_rute, std::vector<Pengguna>& db_user) {
-    // Muat Barang
+
     std::ifstream f_barang("barang.json");
     if (f_barang.is_open()) {
         json j; f_barang >> j;
@@ -15,13 +15,13 @@ void muatData(std::vector<Barang>& db_barang, std::vector<Pesanan>& db_pesanan, 
         f_barang.close();
     }
     
-    // Muat Rute (SUDAH DIUPDATE UNTUK 3 JENIS PENGIRIMAN)
+
     std::ifstream f_rute("rute.json");
     if (f_rute.is_open() && f_rute.peek() != std::ifstream::traits_type::eof()) {
         json j; f_rute >> j;
         for (auto& item : j) {
             Rute r;
-            // Menggunakan .value() agar aman dari crash jika ada format lama
+
             r.id_rute = item.value("id_rute", "");
             r.kota_asal = item.value("kota_asal", "Samarinda");
             r.tujuan = item.value("tujuan", "");
@@ -37,8 +37,7 @@ void muatData(std::vector<Barang>& db_barang, std::vector<Pesanan>& db_pesanan, 
         }
         f_rute.close();
     }
-    
-    // Muat Pesanan
+
     std::ifstream f_pesanan("pesanan.json");
     if (f_pesanan.is_open()) {
         json j; f_pesanan >> j;
@@ -48,7 +47,7 @@ void muatData(std::vector<Barang>& db_barang, std::vector<Pesanan>& db_pesanan, 
         f_pesanan.close();
     }
     
-    // Muat User
+
     std::ifstream f_user("user.json");
     if (f_user.is_open()) {
         json j; f_user >> j;
@@ -64,7 +63,7 @@ void simpanData(const std::vector<Barang>& db_barang, const std::vector<Pesanan>
     
     for (const auto& b : db_barang) j_b.push_back({{"id_barang", b.id_barang}, {"nama_barang", b.nama_barang}, {"harga", b.harga}, {"satuan", b.satuan}, {"berat", b.berat}, {"stok", b.stok}});
     
-    // Simpan Rute (SUDAH DIUPDATE)
+
     for (const auto& r : db_rute) {
         j_r.push_back({
             {"id_rute", r.id_rute}, 

@@ -23,7 +23,7 @@ void konfirmasiPesanan(vector<Pesanan>& daftar_pesanan,
         return;
     }
 
-    // Tampilkan hanya yang "Menunggu Konfirmasi"
+
     cout << "-------------------------------------------------------------------------------\n";
     cout << setw(12) << left << "ID"
          << setw(22) << "Nama Barang"
@@ -59,7 +59,7 @@ void konfirmasiPesanan(vector<Pesanan>& daftar_pesanan,
 
     if (id_cari == "0") return;
 
-    // Cari pesanan
+
     auto it = daftar_pesanan.end();
     for (auto i = daftar_pesanan.begin(); i != daftar_pesanan.end(); ++i) {
         if (i->id_pesanan == id_cari && i->status == "Menunggu Konfirmasi") {

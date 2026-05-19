@@ -15,7 +15,6 @@ void lihatRute(const vector<Rute>& daftar_rute) {
         cout << "\n=== DAFTAR RUTE PENGIRIMAN (DARI SAMARINDA) ===\n";
         cout << "Belum ada rute yang terdaftar.\n";
         
-        // Tombol Kembali ala Inquirer
         cout << "\n  > \033[1;32mKembali\033[0m <\n";
         while (true) {
             char tombol = _getch();
@@ -24,7 +23,6 @@ void lihatRute(const vector<Rute>& daftar_rute) {
         return;
     }
 
-    // Pilihan Menu Sorting
     vector<string> menu_sort = {
         "Tanpa Pengurutan (Sesuai Input)", 
         "Kota Tujuan (A - Z)", 
@@ -35,9 +33,9 @@ void lihatRute(const vector<Rute>& daftar_rute) {
     
     int posisi_sort = 0;
     bool memilih_sort = true;
-    vector<Rute> data_tampil = daftar_rute; // Copy data untuk disortir
+    vector<Rute> data_tampil = daftar_rute; 
 
-    // Menampilkan Menu Sorting
+
     while (memilih_sort) {
         system("cls");
         cout << "\n=== OPSI TAMPILAN DAFTAR RUTE ===\n";
@@ -53,30 +51,27 @@ void lihatRute(const vector<Rute>& daftar_rute) {
 
         char tombol = _getch();
 
-        if (tombol == 72 && posisi_sort > 0) { // Panah Atas
+        if (tombol == 72 && posisi_sort > 0) {
             posisi_sort--;
-        } else if (tombol == 80 && posisi_sort < menu_sort.size() - 1) { // Panah Bawah
+        } else if (tombol == 80 && posisi_sort < menu_sort.size() - 1) { 
             posisi_sort++;
-        } else if (tombol == '\r') { // Enter
+        } else if (tombol == '\r') { 
             memilih_sort = false;
         }
     }
 
     if (posisi_sort == 4) {
-        return; // Batal & Kembali ke menu
+        return; 
     }
 
-    // ---------------------------------------------
-    // LOGIKA PENGURUTAN (INSERTION SORT)
-    // ---------------------------------------------
+    
     if (posisi_sort == 1) {
-        // Sortir Kota Tujuan (A - Z)
         for (int i = 1; i < data_tampil.size(); i++) {
             Rute kunci = data_tampil[i];
             int j = i - 1;
             
             string kunci_nama = kunci.tujuan;
-            for (char& c : kunci_nama) c = tolower(c); // Ubah ke huruf kecil untuk perbandingan
+            for (char& c : kunci_nama) c = tolower(c); 
             
             while (j >= 0) {
                 string banding_nama = data_tampil[j].tujuan;
@@ -93,7 +88,6 @@ void lihatRute(const vector<Rute>& daftar_rute) {
         }
     } 
     else if (posisi_sort == 2) {
-        // Sortir Jarak (Ascending / Terdekat)
         for (int i = 1; i < data_tampil.size(); i++) {
             Rute kunci = data_tampil[i];
             int j = i - 1;
@@ -106,7 +100,7 @@ void lihatRute(const vector<Rute>& daftar_rute) {
         }
     } 
     else if (posisi_sort == 3) {
-        // Sortir Jarak (Descending / Terjauh)
+
         for (int i = 1; i < data_tampil.size(); i++) {
             Rute kunci = data_tampil[i];
             int j = i - 1;
@@ -119,9 +113,7 @@ void lihatRute(const vector<Rute>& daftar_rute) {
         }
     }
 
-    // ---------------------------------------------
-    // MENAMPILKAN TABEL HASIL
-    // ---------------------------------------------
+
     system("cls");
     cout << "\n=== DAFTAR RUTE PENGIRIMAN (DARI SAMARINDA) ===\n";
     cout << "Metode: " << menu_sort[posisi_sort] << "\n";
@@ -146,7 +138,7 @@ void lihatRute(const vector<Rute>& daftar_rute) {
     cout << "----------------------------------------------------------------------------------------\n";
     cout << "*Catatan: Jika harga Rp 0, berarti layanan tersebut tidak tersedia untuk rute ini.\n";
     
-    // Tombol Kembali ala Inquirer di akhir tabel
+
     cout << "\n  > \033[1;32mKembali\033[0m <\n";
     
     while (true) {

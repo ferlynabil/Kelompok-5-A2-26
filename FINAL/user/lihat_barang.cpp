@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <conio.h>
 
-// Fungsi pembantu untuk mengubah string ke lowercase (untuk pencarian anti-sensitif)
+
 std::string toLower(std::string s) {
     for(char &c : s) c = tolower(c);
     return s;
@@ -27,7 +27,7 @@ void displayItems(std::vector<Barang>* items) {
 
     int posisi = 0;
     bool milih = true;
-    std::vector<Barang> dataTampil = *items; // Copy data asli agar tidak merusak database utama
+    std::vector<Barang> dataTampil = *items; 
 
     while (milih) {
         system("cls");
@@ -41,9 +41,9 @@ void displayItems(std::vector<Barang>* items) {
         if (tombol == 72 && posisi > 0) posisi--;
         else if (tombol == 80 && posisi < menuSort.size() - 1) posisi++;
         else if (tombol == '\r') {
-            if (posisi == 5) return; // Kembali ke menu utama
+            if (posisi == 5) return; 
             
-            if (posisi == 4) { // FITUR CARI
+            if (posisi == 4) {
                 system("cls");
                 std::cout << "\nMasukkan Nama Barang yang dicari: ";
                 std::string keyword;
@@ -55,15 +55,15 @@ void displayItems(std::vector<Barang>* items) {
                     }
                 }
                 dataTampil = hasilCari;
-            } else if (posisi == 1) { // SORT NAMA
+            } else if (posisi == 1) { 
                 std::sort(dataTampil.begin(), dataTampil.end(), [](const Barang& a, const Barang& b) {
                     return a.nama_barang < b.nama_barang;
                 });
-            } else if (posisi == 2) { // SORT TERMURAH
+            } else if (posisi == 2) {
                 std::sort(dataTampil.begin(), dataTampil.end(), [](const Barang& a, const Barang& b) {
                     return a.harga < b.harga;
                 });
-            } else if (posisi == 3) { // SORT TERMAHAL
+            } else if (posisi == 3) { 
                 std::sort(dataTampil.begin(), dataTampil.end(), [](const Barang& a, const Barang& b) {
                     return a.harga > b.harga;
                 });
@@ -72,7 +72,7 @@ void displayItems(std::vector<Barang>* items) {
         }
     }
 
-    // TAMPILKAN TABEL HASIL
+
     system("cls");
     if (dataTampil.empty()) {
         std::cout << "\n\033[1;31mBarang tidak ditemukan.\033[0m\n";
@@ -90,5 +90,5 @@ void displayItems(std::vector<Barang>* items) {
     }
 
     std::cout << "\n\033[1;32m> Kembali <\033[0m (Tekan Enter)";
-    while (_getch() != '\r'); // Menunggu Enter murni
+    while (_getch() != '\r'); 
 }

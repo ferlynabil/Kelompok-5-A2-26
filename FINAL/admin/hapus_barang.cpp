@@ -7,7 +7,7 @@
 
 using namespace std;
 
-// Tambahkan db_pesanan, db_rute, dan db_user di parameternya
+
 void hapusBarang(vector<Barang>& daftar_barang, vector<Pesanan>& db_pesanan, vector<Rute>& db_rute, vector<Pengguna>& db_user) {
     if (daftar_barang.empty()) {
         system("cls");
@@ -94,7 +94,6 @@ void hapusBarang(vector<Barang>& daftar_barang, vector<Pesanan>& db_pesanan, vec
             cout << "\n[-] Barang " << it->nama_barang << " berhasil dihapus!\n";
             daftar_barang.erase(it);
             
-            // ---> AUTO UPDATE JSON DETIK INI JUGA <---
             simpanData(daftar_barang, db_pesanan, db_rute, db_user);
             cout << "[+] Data Gudang JSON otomatis diperbarui!\n";
 

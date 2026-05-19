@@ -22,5 +22,13 @@
         "password": "0987654321",
         "role": "Customer",
         "username": "ewok"
+    },
+    {
+        "alamat": "Samarinda",
+        "nama_lengkap": "Nurul",
+        "no_telp": "0833345687",
+        "password": "Nulaa0090",
+        "role": "Customer",
+        "username": "Nulaa"
     }
 ]

@@ -6,5 +6,61 @@
         "nama_barang": "Semen Tiga Roda",
         "satuan": "Kilogram (kg)",
         "stok": 8
+    },
+    {
+        "berat": 50.0,
+        "harga": 780000.0,
+        "id_barang": "BRT-001",
+        "nama_barang": "Beton Ready Mix",
+        "satuan": "Kilogram (kg)",
+        "stok": 15
+    },
+    {
+        "berat": 12.0,
+        "harga": 20000.0,
+        "id_barang": "PG-001",
+        "nama_barang": "Pipa PVC",
+        "satuan": "Buah/Pcs",
+        "stok": 30
+    },
+    {
+        "berat": 40.0,
+        "harga": 75000.0,
+        "id_barang": "CAT-001",
+        "nama_barang": "Cat Tembok Putih",
+        "satuan": "Liter (L)",
+        "stok": 12
+    },
+    {
+        "berat": 5.0,
+        "harga": 15000.0,
+        "id_barang": "PSR-001",
+        "nama_barang": "Pasir Halus",
+        "satuan": "Kilogram (kg)",
+        "stok": 50
+    },
+    {
+        "berat": 1.0,
+        "harga": 5000.0,
+        "id_barang": "BTA-001",
+        "nama_barang": "Bata Merah",
+        "satuan": "Buah/Pcs",
+        "stok": 200
+    },
+    {
+        "berat": 25.0,
+        "harga": 65000.0,
+        "id_barang": "KRC-001",
+        "nama_barang": "Keramik Putih",
+        "satuan": "Sak",
+        "stok": 20
+    },
+    {
+        "berat": 3.0,
+        "harga": 35000.0,
+        "id_barang": "BES-001",
+        "nama_barang": "Besi Hollow",
+        "satuan": "Meter (m)",
+        "stok": 40
     }
 ]

@@ -8,7 +8,6 @@
 
 using namespace std;
 
-// 1. UPDATE PARAMETER (Tambah 3 vector lainnya)
 void tambahBarang(vector<Barang>& daftar_barang, vector<Pesanan>& db_pesanan, vector<Rute>& db_rute, vector<Pengguna>& db_user) {
     char tambah_lagi;
     static bool first_run = true;
@@ -19,12 +18,11 @@ void tambahBarang(vector<Barang>& daftar_barang, vector<Pesanan>& db_pesanan, ve
         cout << "\n=== TAMBAH BARANG ===\n";
         cout << "[Ketik '0' pada Nama Barang untuk Batal dan Kembali]\n\n";
         
-        // 1. INPUT NAMA BARANG & TOMBOL KEMBALI
         cout << "Nama Barang : "; 
         
         if (first_run) {
             string dummy;
-            // Membersihkan sisa enter kalau ada
+
             if (cin.peek() == '\n') getline(cin, dummy);
             first_run = false;
         }
@@ -33,7 +31,7 @@ void tambahBarang(vector<Barang>& daftar_barang, vector<Pesanan>& db_pesanan, ve
         
         if (barang_baru.nama_barang == "0") {
             cout << "\n\033[1;33mDibatalkan. Kembali ke menu admin...\033[0m\n";
-            break; // Keluar dari loop dan kembali ke menu
+            break; 
         }
 
         if (barang_baru.nama_barang.empty()) {
@@ -45,7 +43,7 @@ void tambahBarang(vector<Barang>& daftar_barang, vector<Pesanan>& db_pesanan, ve
             continue;
         }
 
-        // 2. PILIH KATEGORI UNTUK ID OTOMATIS (Pakai Arrow Keys)
+
         vector<string> list_kategori = {"Ringan (RGN)", "Sedang (SDG)", "Berat (BRT)"};
         vector<string> prefix_kategori = {"RGN", "SDG", "BRT"};
         int posisi_kategori = 0;
@@ -76,18 +74,18 @@ void tambahBarang(vector<Barang>& daftar_barang, vector<Pesanan>& db_pesanan, ve
             }
         }
 
-        // 3. GENERATE ID OTOMATIS
+
         string prefix_pilihan = prefix_kategori[posisi_kategori];
         int urutan = 1;
         
-        // Hitung ada berapa barang dengan awalan (prefix) yang sama
+
         for (const auto& b : daftar_barang) {
             if (b.id_barang.length() >= 3 && b.id_barang.substr(0, 3) == prefix_pilihan) {
                 urutan++;
             }
         }
 
-        // Format angka jadi 3 digit (contoh: 1 jadi "001")
+
         string str_urutan = to_string(urutan);
         while(str_urutan.length() < 3) {
             str_urutan = "0" + str_urutan;
@@ -95,14 +93,14 @@ void tambahBarang(vector<Barang>& daftar_barang, vector<Pesanan>& db_pesanan, ve
         
         barang_baru.id_barang = prefix_pilihan + "-" + str_urutan;
 
-        // Tampilkan hasil generate
+
         system("cls");
         cout << "\n=== TAMBAH BARANG ===\n";
         cout << "Nama Barang : " << barang_baru.nama_barang << "\n";
         cout << "Kategori    : " << list_kategori[posisi_kategori] << "\n";
         cout << "ID Otomatis : \033[1;32m" << barang_baru.id_barang << "\033[0m\n\n";
         
-        // 4. INPUT HARGA
+
         string input_harga;
         bool harga_valid = true;
         cout << "Harga (Rp) (hanya angka) : "; 
@@ -134,7 +132,7 @@ void tambahBarang(vector<Barang>& daftar_barang, vector<Pesanan>& db_pesanan, ve
         }
         barang_baru.harga = stod(input_harga);
         
-        // 5. INPUT SATUAN
+
         vector<string> list_satuan = {"Kilogram (kg)", "Gram (g)", "Liter (L)", "Buah/Pcs", "Sak", "Meter (m)"};
         int posisi_satuan = 0;
         char tombol;
@@ -174,7 +172,7 @@ void tambahBarang(vector<Barang>& daftar_barang, vector<Pesanan>& db_pesanan, ve
         cout << "Harga (Rp)  : " << input_harga << "\n";
         cout << "Satuan      : " << barang_baru.satuan << "\n";
 
-        // 6. INPUT BERAT
+
         string input_berat;
         bool berat_valid = true;
         cout << "Berat/Jumlah per harga (hanya angka) : "; 
@@ -206,7 +204,7 @@ void tambahBarang(vector<Barang>& daftar_barang, vector<Pesanan>& db_pesanan, ve
         }
         barang_baru.berat = stod(input_berat);
 
-        // 7. INPUT STOK
+
         string input_stok;
         bool stok_valid = true;
         cout << "Stok Awal  (hanya angka) : "; 
@@ -238,10 +236,10 @@ void tambahBarang(vector<Barang>& daftar_barang, vector<Pesanan>& db_pesanan, ve
         }
         barang_baru.stok = stoi(input_stok);
         
-        // 2. PROSES SIMPAN DAN AUTO UPDATE
+
         daftar_barang.push_back(barang_baru);
         
-        // ---> PANGGIL FUNGSI SAKTI <---
+
         simpanData(daftar_barang, db_pesanan, db_rute, db_user);
 
         cout << "\n[+] Berhasil menambahkan " << barang_baru.nama_barang << " dengan ID " << barang_baru.id_barang << " ke gudang!\n";

@@ -4,11 +4,6 @@
 #include <algorithm>
 #include <conio.h>
 
-<<<<<<< HEAD
-// ubah ke huruf kecil semua biar pencarian barang jadi lebih santai gak kaku
-=======
-
->>>>>>> ebf0d88b9941d1c50ebe3fc3f075b1196c8a1441
 std::string toLower(std::string s) {
     for(char &c : s) c = tolower(c);
     return s;
@@ -31,11 +26,6 @@ void displayItems(std::vector<Barang>* items) {
 
     int posisi = 0;
     bool milih = true;
-<<<<<<< HEAD
-    
-    // sengaja copy datanya di sini biar database aslinya gak rusak urutannya
-=======
->>>>>>> ebf0d88b9941d1c50ebe3fc3f075b1196c8a1441
     std::vector<Barang> dataTampil = *items; 
 
     while (milih) {
@@ -45,39 +35,6 @@ void displayItems(std::vector<Barang>* items) {
             if (i == posisi) std::cout << "  > \033[1;32m" << menuSort[i] << "\033[0m <\n";
             else std::cout << "    " << menuSort[i] << "\n";
         }
-<<<<<<< HEAD
-        
-        int tombol = _getch();
-        if (tombol == 224) {
-            tombol = _getch();
-            if (tombol == 72 && posisi > 0) posisi--;
-            else if (tombol == 80 && posisi < menuSort.size() - 1) posisi++;
-        } else if (tombol == '\r') {
-            if (posisi == 5) return;
-            
-            if (posisi == 4) {
-                 std::cout << "\nMasukkan kata kunci pencarian: ";
-                 std::string keyword;
-                 std::getline(std::cin, keyword);
-                 keyword = toLower(keyword);
-                 
-                 std::vector<Barang> hasilCari;
-                 for (const auto& brg : *items) {
-                     if (toLower(brg.nama_barang).find(keyword) != std::string::npos) {
-                         hasilCari.push_back(brg);
-                     }
-                 }
-                 dataTampil = hasilCari;
-                 milih = false;
-                 continue;
-            }
-            
-            if (posisi == 1) { 
-                std::sort(dataTampil.begin(), dataTampil.end(), [](const Barang& a, const Barang& b) {
-                    return a.nama_barang < b.nama_barang;
-                });
-            } else if (posisi == 2) { 
-=======
 
         char tombol = _getch();
         if (tombol == 72 && posisi > 0) posisi--;
@@ -102,7 +59,6 @@ void displayItems(std::vector<Barang>* items) {
                     return a.nama_barang < b.nama_barang;
                 });
             } else if (posisi == 2) {
->>>>>>> ebf0d88b9941d1c50ebe3fc3f075b1196c8a1441
                 std::sort(dataTampil.begin(), dataTampil.end(), [](const Barang& a, const Barang& b) {
                     return a.harga < b.harga;
                 });
@@ -115,11 +71,6 @@ void displayItems(std::vector<Barang>* items) {
         }
     }
 
-<<<<<<< HEAD
-    // langsung cetak hasil susunan datanya ke layar pembeli
-=======
-
->>>>>>> ebf0d88b9941d1c50ebe3fc3f075b1196c8a1441
     system("cls");
     if (dataTampil.empty()) {
         std::cout << "\n\033[1;31mBarang tidak ditemukan.\033[0m\n";
@@ -137,13 +88,7 @@ void displayItems(std::vector<Barang>* items) {
         }
         std::cout << "--------------------------------------------------------------\n";
     }
-<<<<<<< HEAD
-    std::cout << "\n\033[1;36mTekan Enter untuk kembali...\033[0m";
-    std::string dumm;
-    std::getline(std::cin, dumm);
-=======
 
     std::cout << "\n\033[1;32m> Kembali <\033[0m (Tekan Enter)";
     while (_getch() != '\r'); 
->>>>>>> ebf0d88b9941d1c50ebe3fc3f075b1196c8a1441
 }
